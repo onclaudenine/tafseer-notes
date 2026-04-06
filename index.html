@@ -368,7 +368,7 @@ async function deleteNote(id){
 function populateFilter(){
   const sel=document.getElementById('filter-surah');const cur=sel.value;
   const seen=new Set();const opts=['<option value="">All surahs</option>'];
-  notes.forEach(n=>{const k=n.surahNum+'|'+n.surahName;if(!seen.has(k)){seen.add(k);opts.push(`<option value="${k}">${n.surahNum?n.surahNum+'. ':''}${n.surahName}</option>');}});
+  notes.forEach(n=>{const k=n.surahNum+'|'+n.surahName;if(!seen.has(k)){seen.add(k);opts.push(`<option value="${k}">${n.surahNum?n.surahNum+'. ':''}${n.surahName}</option>`);}});
   sel.innerHTML=opts.join('');if(cur)sel.value=cur;
 }
 
