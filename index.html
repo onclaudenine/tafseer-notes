@@ -9,451 +9,416 @@
 <title>Quran Study Journal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
-  --teal:       #0F6E56;
-  --teal-mid:   #1D9E75;
-  --teal-light: #E1F5EE;
-  --teal-pale:  #f0faf6;
-  --gold:       #B07D3A;
-  --gold-light: #FDF6EC;
-  --ink:        #1a1a18;
-  --ink-mid:    #3d3d38;
-  --ink-muted:  #7a7a72;
-  --ink-faint:  #c2c2b8;
-  --surface:    #fafaf8;
-  --surface-2:  #f3f3ef;
-  --border:     #e2e2da;
-  --danger:     #9e2828;
-  --radius:     10px;
-  --radius-lg:  16px;
+  --teal:#0F6E56;--teal-mid:#1D9E75;--teal-light:#E1F5EE;--teal-pale:#f0faf6;
+  --gold:#B07D3A;--gold-light:#FDF6EC;
+  --ink:#1a1a18;--ink-mid:#3d3d38;--ink-muted:#7a7a72;--ink-faint:#c2c2b8;
+  --surface:#fafaf8;--surface-2:#f3f3ef;--border:#e2e2da;--danger:#9e2828;
+  --radius:10px;--radius-lg:16px;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'DM Sans', sans-serif; background: var(--surface); color: var(--ink); min-height: 100vh; font-size: 15px; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--ink);min-height:100vh;font-size:15px}
 
-header { background: var(--teal); color: white; padding: 1.25rem 1.5rem 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(15,110,86,0.25); }
-.header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
-.app-title { font-family: 'Lora', serif; font-size: 1.3rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
-.app-subtitle { font-size: 11px; opacity: 0.7; margin-top: 2px; font-weight: 300; }
-.bismillah { font-family: 'Amiri', serif; font-size: 1.1rem; opacity: 0.85; text-align: right; }
-.sync-badge { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 99px; margin-top: 4px; display: inline-flex; align-items: center; gap: 4px; }
-.sync-badge.ok      { background: rgba(255,255,255,0.2);   color: white; }
-.sync-badge.err     { background: rgba(255,80,80,0.3);    color: #ffd0d0; }
-.sync-badge.loading { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); }
-.spinner { width: 10px; height: 10px; border: 1.5px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
+#login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:2rem;text-align:center}
+.login-card{background:white;border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:2.5rem 2rem;max-width:360px;width:100%}
+.login-bismillah{font-family:'Amiri',serif;font-size:2rem;color:var(--teal);margin-bottom:.5rem}
+.login-title{font-family:'Lora',serif;font-size:1.4rem;font-weight:600;color:var(--ink);margin-bottom:.5rem}
+.login-subtitle{font-size:13px;color:var(--ink-muted);line-height:1.6;margin-bottom:2rem}
+.btn-google{width:100%;padding:12px 16px;background:white;color:var(--ink);border:1.5px solid var(--border);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s}
+.btn-google:hover{background:var(--surface-2);border-color:var(--ink-faint)}
+.btn-google:active{transform:scale(.98)}
+.google-icon{width:20px;height:20px;flex-shrink:0}
+.login-note{font-size:11px;color:var(--ink-faint);margin-top:1.5rem;line-height:1.6}
 
-.tabs { display: flex; }
-.tab { flex: 1; padding: 10px 8px; background: none; border: none; color: rgba(255,255,255,0.6); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; border-bottom: 2.5px solid transparent; transition: all 0.2s; }
-.tab.active { color: white; border-bottom-color: white; font-weight: 500; }
-.tab:hover:not(.active) { color: rgba(255,255,255,0.85); }
+#app{display:none}
 
-main { padding: 1.25rem; max-width: 680px; margin: 0 auto; }
-.section { display: none; }
-.section.active { display: block; }
+header{background:var(--teal);color:white;padding:1.25rem 1.5rem 0;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(15,110,86,.25)}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem}
+.app-title{font-family:'Lora',serif;font-size:1.3rem;font-weight:600;letter-spacing:-.01em;line-height:1.2}
+.app-subtitle{font-size:11px;opacity:.7;margin-top:2px;font-weight:300}
+.bismillah{font-family:'Amiri',serif;font-size:1.1rem;opacity:.85}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.user-row{display:flex;align-items:center;gap:8px}
+.user-email{font-size:11px;opacity:.7;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-signout{font-size:11px;background:rgba(255,255,255,.15);color:white;border:none;border-radius:99px;padding:3px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s}
+.btn-signout:hover{background:rgba(255,255,255,.25)}
+.sync-badge{font-size:10px;font-weight:500;padding:2px 8px;border-radius:99px;display:inline-flex;align-items:center;gap:4px}
+.sync-badge.ok{background:rgba(255,255,255,.2);color:white}
+.sync-badge.err{background:rgba(255,80,80,.3);color:#ffd0d0}
+.sync-badge.loading{background:rgba(255,255,255,.15);color:rgba(255,255,255,.7)}
+.spinner{width:10px;height:10px;border:1.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-.form-block { margin-bottom: 1rem; }
-.form-block label { display: block; font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted); margin-bottom: 5px; }
-input[type=text], input[type=number], select, textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink); background: white; transition: border-color 0.2s; outline: none; -webkit-appearance: none; }
-input:focus, select:focus, textarea:focus { border-color: var(--teal-mid); box-shadow: 0 0 0 3px rgba(29,158,117,0.12); }
-textarea { min-height: 80px; resize: vertical; line-height: 1.6; }
-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237a7a72' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+.tabs{display:flex}
+.tab{flex:1;padding:10px 8px;background:none;border:none;color:rgba(255,255,255,.6);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;border-bottom:2.5px solid transparent;transition:all .2s}
+.tab.active{color:white;border-bottom-color:white;font-weight:500}
+.tab:hover:not(.active){color:rgba(255,255,255,.85)}
 
-.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
-.grid3 { display: grid; grid-template-columns: 80px 1fr; gap: 10px; margin-bottom: 1rem; }
+main{padding:1.25rem;max-width:680px;margin:0 auto}
+.section{display:none}.section.active{display:block}
 
-.btn-primary { width: 100%; padding: 13px; background: var(--teal); color: white; border: none; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.1s; margin-top: 0.5rem; }
-.btn-primary:active { transform: scale(0.98); }
-.btn-primary:hover { background: var(--teal-mid); }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-.btn-fetch { width: 100%; padding: 11px; background: var(--gold-light); color: var(--gold); border: 1.5px solid #e8d0a8; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; margin-bottom: 1rem; }
-.btn-fetch:hover { background: #faeeda; }
-.btn-fetch:disabled { opacity: 0.5; cursor: not-allowed; }
+.form-block{margin-bottom:1rem}
+.form-block label{display:block;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);margin-bottom:5px}
+input[type=text],input[type=number],select,textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);background:white;transition:border-color .2s;outline:none;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--teal-mid);box-shadow:0 0 0 3px rgba(29,158,117,.12)}
+textarea{min-height:80px;resize:vertical;line-height:1.6}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237a7a72' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
 
-.ayah-card { background: white; border: 1.5px solid var(--teal-light); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.25rem; display: none; }
-.ayah-card.visible { display: block; }
-.ayah-ref-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--teal-mid); margin-bottom: 10px; }
-.arabic-text { font-family: 'Amiri', serif; font-size: 1.6rem; line-height: 2; text-align: right; direction: rtl; color: var(--ink); border-bottom: 1px solid var(--teal-light); padding-bottom: 12px; margin-bottom: 10px; }
-.trans-text { font-family: 'Lora', serif; font-size: 0.9rem; line-height: 1.75; color: var(--ink-mid); font-style: italic; }
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.grid3{display:grid;grid-template-columns:80px 1fr;gap:10px;margin-bottom:1rem}
 
-.status-msg { font-size: 13px; padding: 6px 0; min-height: 24px; color: var(--ink-muted); }
-.status-msg.err { color: var(--danger); }
-.status-msg.loading { color: var(--teal-mid); }
-.divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
-.section-label { font-family: 'Lora', serif; font-size: 0.85rem; font-weight: 600; color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+.btn-primary{width:100%;padding:13px;background:var(--teal);color:white;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:background .2s,transform .1s;margin-top:.5rem}
+.btn-primary:active{transform:scale(.98)}.btn-primary:hover{background:var(--teal-mid)}.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-fetch{width:100%;padding:11px;background:var(--gold-light);color:var(--gold);border:1.5px solid #e8d0a8;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;margin-bottom:1rem}
+.btn-fetch:hover{background:#faeeda}.btn-fetch:disabled{opacity:.5;cursor:not-allowed}
 
-.notes-list { display: flex; flex-direction: column; gap: 12px; }
-.note-card { background: white; border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; }
-.note-card:hover { border-color: var(--teal-light); }
-.note-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-.note-surah { font-family: 'Lora', serif; font-size: 1rem; font-weight: 600; color: var(--ink); }
-.note-ayah { font-size: 12px; color: var(--teal-mid); font-weight: 500; margin-top: 2px; }
-.note-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-.chip { font-size: 11px; padding: 2px 9px; border-radius: 99px; border: 1px solid var(--border); color: var(--ink-muted); background: var(--surface-2); }
-.chip.teal { background: var(--teal-light); color: var(--teal); border-color: #9fe1cb; }
-.note-arabic-mini { font-family: 'Amiri', serif; font-size: 1.1rem; text-align: right; direction: rtl; color: var(--ink-mid); background: var(--teal-pale); border-radius: var(--radius); padding: 8px 12px; line-height: 1.8; margin-bottom: 6px; }
-.note-trans-mini { font-family: 'Lora', serif; font-size: 0.8rem; font-style: italic; color: var(--ink-muted); margin-bottom: 10px; line-height: 1.5; }
-.note-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.nf.full { grid-column: 1/-1; }
-.nf-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-faint); margin-bottom: 3px; }
-.nf-val { font-size: 13px; color: var(--ink-mid); line-height: 1.5; }
-.action-pill { display: inline-block; background: #eaf6f0; color: var(--teal); border: 1px solid #9fe1cb; font-size: 12px; padding: 3px 10px; border-radius: 99px; }
-.del-btn { background: none; border: none; cursor: pointer; color: var(--ink-faint); font-size: 18px; line-height: 1; padding: 0 2px; transition: color 0.2s; flex-shrink: 0; }
-.del-btn:hover { color: var(--danger); }
+.ayah-card{background:white;border:1.5px solid var(--teal-light);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.25rem;display:none}
+.ayah-card.visible{display:block}
+.ayah-ref-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--teal-mid);margin-bottom:10px}
+.arabic-text{font-family:'Amiri',serif;font-size:1.6rem;line-height:2;text-align:right;direction:rtl;color:var(--ink);border-bottom:1px solid var(--teal-light);padding-bottom:12px;margin-bottom:10px}
+.trans-text{font-family:'Lora',serif;font-size:.9rem;line-height:1.75;color:var(--ink-mid);font-style:italic}
 
-.search-wrap { position: relative; margin-bottom: 1rem; }
-.search-wrap input { padding-left: 36px; }
-.search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--ink-faint); font-size: 16px; pointer-events: none; }
-.filter-row { display: flex; gap: 8px; margin-bottom: 1rem; }
-.filter-row select { flex: 1; }
+.status-msg{font-size:13px;padding:6px 0;min-height:24px;color:var(--ink-muted)}
+.status-msg.err{color:var(--danger)}.status-msg.loading{color:var(--teal-mid)}
+.divider{border:none;border-top:1px solid var(--border);margin:1.25rem 0}
+.section-label{font-family:'Lora',serif;font-size:.85rem;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem}
 
-.stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 1.5rem; }
-.stat-card { background: white; border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; text-align: center; }
-.stat-num { font-family: 'Lora', serif; font-size: 2rem; font-weight: 600; color: var(--teal); }
-.stat-label { font-size: 11px; color: var(--ink-muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+.notes-list{display:flex;flex-direction:column;gap:12px}
+.note-card{background:white;border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;transition:border-color .2s}
+.note-card:hover{border-color:var(--teal-light)}
+.note-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.note-surah{font-family:'Lora',serif;font-size:1rem;font-weight:600;color:var(--ink)}
+.note-ayah{font-size:12px;color:var(--teal-mid);font-weight:500;margin-top:2px}
+.note-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.chip{font-size:11px;padding:2px 9px;border-radius:99px;border:1px solid var(--border);color:var(--ink-muted);background:var(--surface-2)}
+.chip.teal{background:var(--teal-light);color:var(--teal);border-color:#9fe1cb}
+.note-arabic-mini{font-family:'Amiri',serif;font-size:1.1rem;text-align:right;direction:rtl;color:var(--ink-mid);background:var(--teal-pale);border-radius:var(--radius);padding:8px 12px;line-height:1.8;margin-bottom:6px}
+.note-trans-mini{font-family:'Lora',serif;font-size:.8rem;font-style:italic;color:var(--ink-muted);margin-bottom:10px;line-height:1.5}
+.note-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.nf.full{grid-column:1/-1}
+.nf-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);margin-bottom:3px}
+.nf-val{font-size:13px;color:var(--ink-mid);line-height:1.5}
+.action-pill{display:inline-block;background:#eaf6f0;color:var(--teal);border:1px solid #9fe1cb;font-size:12px;padding:3px 10px;border-radius:99px}
+.del-btn{background:none;border:none;cursor:pointer;color:var(--ink-faint);font-size:18px;line-height:1;padding:0 2px;transition:color .2s;flex-shrink:0}
+.del-btn:hover{color:var(--danger)}
 
-.empty-state { text-align: center; padding: 3.5rem 1rem; color: var(--ink-muted); }
-.empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
-.empty-state h3 { font-family: 'Lora', serif; font-size: 1rem; color: var(--ink-mid); margin-bottom: 6px; }
-.empty-state p { font-size: 13px; line-height: 1.6; }
+.search-wrap{position:relative;margin-bottom:1rem}
+.search-wrap input{padding-left:36px}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink-faint);font-size:16px;pointer-events:none}
+.filter-row{display:flex;gap:8px;margin-bottom:1rem}
+.filter-row select{flex:1}
 
-@media (max-width: 400px) {
-  .note-fields { grid-template-columns: 1fr; }
-  .nf.full { grid-column: 1; }
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.5rem}
+.stat-card{background:white;border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem;text-align:center}
+.stat-num{font-family:'Lora',serif;font-size:2rem;font-weight:600;color:var(--teal)}
+.stat-label{font-size:11px;color:var(--ink-muted);margin-top:3px;text-transform:uppercase;letter-spacing:.05em}
+
+.empty-state{text-align:center;padding:3.5rem 1rem;color:var(--ink-muted)}
+.empty-icon{font-size:2.5rem;margin-bottom:.75rem}
+.empty-state h3{font-family:'Lora',serif;font-size:1rem;color:var(--ink-mid);margin-bottom:6px}
+.empty-state p{font-size:13px;line-height:1.6}
+
+@media(max-width:400px){.note-fields{grid-template-columns:1fr}.nf.full{grid-column:1}.stats-grid{grid-template-columns:1fr 1fr}.user-email{max-width:100px}}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-top">
-    <div>
-      <div class="app-title">Quran Study Journal</div>
-      <div class="app-subtitle">Halaqah notes · synced across all devices</div>
-      <div class="sync-badge loading" id="sync-badge"><div class="spinner"></div><span>Connecting…</span></div>
-    </div>
-    <div class="bismillah">بِسْمِ اللَّهِ</div>
-  </div>
-  <div class="tabs">
-    <button class="tab active" onclick="showTab('add')">Add note</button>
-    <button class="tab" onclick="showTab('browse')">My notes</button>
-    <button class="tab" onclick="showTab('overview')">Overview</button>
-  </div>
-</header>
-
-<main>
-
-<!-- ══ ADD NOTE ══ -->
-<div class="section active" id="tab-add">
-  <div class="grid3" style="margin-top:0.25rem">
-    <div class="form-block" style="margin:0">
-      <label>Surah #</label>
-      <input type="number" id="surah-num" min="1" max="114" placeholder="1–114" oninput="autoName()">
-    </div>
-    <div class="form-block" style="margin:0">
-      <label>Surah name</label>
-      <input type="text" id="surah-name" placeholder="Auto-filled" readonly style="background:var(--surface-2);color:var(--ink-mid)">
-    </div>
-  </div>
-  <div class="grid2">
-    <div class="form-block" style="margin:0"><label>Aayah from</label><input type="number" id="ayah-from" min="1" placeholder="e.g. 1"></div>
-    <div class="form-block" style="margin:0"><label>Aayah to (optional)</label><input type="number" id="ayah-to" min="1" placeholder="leave blank = single"></div>
-  </div>
-  <div class="form-block">
-    <label>Level</label>
-    <select id="level"><option value="Aayat-level">Aayat-level</option><option value="Surah-level">Surah-level</option></select>
-  </div>
-  <div class="form-block">
-    <label>Translation</label>
-    <select id="trans-id">
-      <option value="131">The Clear Quran — Dr. Mustafa Khattab</option>
-      <option value="20">Saheeh International</option>
-      <option value="85">Pickthall</option>
-      <option value="19">Yusuf Ali</option>
-      <option value="57">Mufti Taqi Usmani</option>
-      <option value="203">Dr. Wahiduddin Khan</option>
-    </select>
-  </div>
-  <button class="btn-fetch" id="fetch-btn" onclick="fetchAyat()">&#9654; Fetch Arabic text &amp; translation</button>
-  <div class="status-msg" id="fetch-msg"></div>
-  <div class="ayah-card" id="ayah-preview">
-    <div class="ayah-ref-label" id="prev-ref"></div>
-    <div class="arabic-text" id="prev-arabic"></div>
-    <div class="trans-text" id="prev-trans"></div>
-  </div>
-  <hr class="divider">
-  <div class="section-label">Your notes</div>
-  <div class="form-block"><label>Study group notes</label><textarea id="group-notes" placeholder="Key points from the halaqah, teacher's explanation..."></textarea></div>
-  <div class="form-block"><label>Tafseer reference</label><input type="text" id="tafseer" placeholder="e.g. Ibn Kathir vol.1, Maariful Quran..."></div>
-  <div class="form-block"><label>Personal reflection</label><textarea id="reflection" placeholder="What does this aayah mean to me personally?"></textarea></div>
-  <div class="form-block"><label>Action point</label><input type="text" id="action" placeholder="e.g. Memorise by next week, apply this daily..."></div>
-  <button class="btn-primary" id="save-btn" onclick="saveNote()">Save note</button>
-  <div class="status-msg" id="save-msg" style="text-align:center;margin-top:8px"></div>
-</div>
-
-<!-- ══ BROWSE ══ -->
-<div class="section" id="tab-browse">
-  <div class="search-wrap" style="margin-top:0.25rem">
-    <span class="search-icon">&#9901;</span>
-    <input type="text" placeholder="Search notes..." oninput="renderNotes(this.value)">
-  </div>
-  <div class="filter-row">
-    <select id="filter-surah" onchange="renderNotes()"><option value="">All surahs</option></select>
-    <select id="filter-level" onchange="renderNotes()">
-      <option value="">All levels</option>
-      <option value="Aayat-level">Aayat-level</option>
-      <option value="Surah-level">Surah-level</option>
-    </select>
-  </div>
-  <div class="notes-list" id="notes-list">
-    <div class="empty-state"><div class="empty-icon">&#128214;</div><h3>Loading notes…</h3></div>
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+    <div class="login-title">Quran Study Journal</div>
+    <div class="login-subtitle">Your personal halaqah notebook — notes synced across all your devices</div>
+    <button class="btn-google" onclick="signInWithGoogle()">
+      <svg class="google-icon" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Sign in with Google
+    </button>
+    <div class="login-note">Your notes are private to your account and synced across all your devices.</div>
   </div>
 </div>
 
-<!-- ══ OVERVIEW ══ -->
-<div class="section" id="tab-overview">
-  <div class="stats-grid" style="margin-top:0.25rem">
-    <div class="stat-card"><div class="stat-num" id="s-total">—</div><div class="stat-label">Notes</div></div>
-    <div class="stat-card"><div class="stat-num" id="s-surahs">—</div><div class="stat-label">Surahs</div></div>
-    <div class="stat-card"><div class="stat-num" id="s-actions">—</div><div class="stat-label">Actions</div></div>
-  </div>
-  <div class="section-label">Surahs studied</div>
-  <div id="surah-breakdown"></div>
-</div>
+<!-- APP -->
+<div id="app">
+  <header>
+    <div class="header-top">
+      <div>
+        <div class="app-title">Quran Study Journal</div>
+        <div class="app-subtitle">Halaqah notes · synced across all devices</div>
+        <div class="sync-badge loading" id="sync-badge"><div class="spinner"></div><span>Loading…</span></div>
+      </div>
+      <div class="header-right">
+        <div class="bismillah">بِسْمِ اللَّهِ</div>
+        <div class="user-row">
+          <span class="user-email" id="user-email"></span>
+          <button class="btn-signout" onclick="signOut()">Sign out</button>
+        </div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('add')">Add note</button>
+      <button class="tab" onclick="showTab('browse')">My notes</button>
+      <button class="tab" onclick="showTab('overview')">Overview</button>
+    </div>
+  </header>
 
-</main>
+  <main>
+    <!-- ADD -->
+    <div class="section active" id="tab-add">
+      <div class="grid3" style="margin-top:.25rem">
+        <div class="form-block" style="margin:0"><label>Surah #</label><input type="number" id="surah-num" min="1" max="114" placeholder="1–114" oninput="autoName()"></div>
+        <div class="form-block" style="margin:0"><label>Surah name</label><input type="text" id="surah-name" placeholder="Auto-filled" readonly style="background:var(--surface-2);color:var(--ink-mid)"></div>
+      </div>
+      <div class="grid2">
+        <div class="form-block" style="margin:0"><label>Aayah from</label><input type="number" id="ayah-from" min="1" placeholder="e.g. 1"></div>
+        <div class="form-block" style="margin:0"><label>Aayah to (optional)</label><input type="number" id="ayah-to" min="1" placeholder="leave blank = single"></div>
+      </div>
+      <div class="form-block"><label>Level</label><select id="level"><option value="Aayat-level">Aayat-level</option><option value="Surah-level">Surah-level</option></select></div>
+      <div class="form-block"><label>Translation</label>
+        <select id="trans-id">
+          <option value="131">The Clear Quran — Dr. Mustafa Khattab</option>
+          <option value="20">Saheeh International</option>
+          <option value="85">Pickthall</option>
+          <option value="19">Yusuf Ali</option>
+          <option value="57">Mufti Taqi Usmani</option>
+          <option value="203">Dr. Wahiduddin Khan</option>
+        </select>
+      </div>
+      <button class="btn-fetch" id="fetch-btn" onclick="fetchAyat()">&#9654; Fetch Arabic text &amp; translation</button>
+      <div class="status-msg" id="fetch-msg"></div>
+      <div class="ayah-card" id="ayah-preview">
+        <div class="ayah-ref-label" id="prev-ref"></div>
+        <div class="arabic-text" id="prev-arabic"></div>
+        <div class="trans-text" id="prev-trans"></div>
+      </div>
+      <hr class="divider">
+      <div class="section-label">Your notes</div>
+      <div class="form-block"><label>Study group notes</label><textarea id="group-notes" placeholder="Key points from the halaqah, teacher's explanation..."></textarea></div>
+      <div class="form-block"><label>Tafseer reference</label><input type="text" id="tafseer" placeholder="e.g. Ibn Kathir vol.1, Maariful Quran..."></div>
+      <div class="form-block"><label>Personal reflection</label><textarea id="reflection" placeholder="What does this aayah mean to me personally?"></textarea></div>
+      <div class="form-block"><label>Action point</label><input type="text" id="action" placeholder="e.g. Memorise by next week, apply this daily..."></div>
+      <button class="btn-primary" id="save-btn" onclick="saveNote()">Save note</button>
+      <div class="status-msg" id="save-msg" style="text-align:center;margin-top:8px"></div>
+    </div>
+
+    <!-- BROWSE -->
+    <div class="section" id="tab-browse">
+      <div class="search-wrap" style="margin-top:.25rem">
+        <span class="search-icon">&#9901;</span>
+        <input type="text" placeholder="Search notes..." oninput="renderNotes(this.value)">
+      </div>
+      <div class="filter-row">
+        <select id="filter-surah" onchange="renderNotes()"><option value="">All surahs</option></select>
+        <select id="filter-level" onchange="renderNotes()"><option value="">All levels</option><option value="Aayat-level">Aayat-level</option><option value="Surah-level">Surah-level</option></select>
+      </div>
+      <div class="notes-list" id="notes-list"><div class="empty-state"><div class="empty-icon">📖</div><h3>Loading notes…</h3></div></div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="section" id="tab-overview">
+      <div class="stats-grid" style="margin-top:.25rem">
+        <div class="stat-card"><div class="stat-num" id="s-total">—</div><div class="stat-label">Notes</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-surahs">—</div><div class="stat-label">Surahs</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-actions">—</div><div class="stat-label">Actions</div></div>
+      </div>
+      <div class="section-label">Surahs studied</div>
+      <div id="surah-breakdown"></div>
+    </div>
+  </main>
+</div>
 
 <script>
 const SUPABASE_URL = 'https://sreuyopwlarhaklvunkq.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyZXV5b3B3bGFyaGFrbHZ1bmtxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0OTg1NzMsImV4cCI6MjA5MTA3NDU3M30.8D-6otVipgdWFrz8tj9I4lO3UUBO0VLPutEDQu7y1I8';
-const API = `${SUPABASE_URL}/rest/v1/notes`;
-const H = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
+const REDIRECT_URL = 'https://fauzanpat.github.io/';
 
-const SURAHS = {1:"Al-Fatihah",2:"Al-Baqarah",3:"Aal-Imran",4:"An-Nisa",5:"Al-Maidah",6:"Al-Anam",7:"Al-Araf",8:"Al-Anfal",9:"At-Tawbah",10:"Yunus",11:"Hud",12:"Yusuf",13:"Ar-Rad",14:"Ibrahim",15:"Al-Hijr",16:"An-Nahl",17:"Al-Isra",18:"Al-Kahf",19:"Maryam",20:"Ta-Ha",21:"Al-Anbiya",22:"Al-Hajj",23:"Al-Muminun",24:"An-Nur",25:"Al-Furqan",26:"Ash-Shuara",27:"An-Naml",28:"Al-Qasas",29:"Al-Ankabut",30:"Ar-Rum",31:"Luqman",32:"As-Sajdah",33:"Al-Ahzab",34:"Saba",35:"Fatir",36:"Ya-Sin",37:"As-Saffat",38:"Sad",39:"Az-Zumar",40:"Ghafir",41:"Fussilat",42:"Ash-Shura",43:"Az-Zukhruf",44:"Ad-Dukhan",45:"Al-Jathiyah",46:"Al-Ahqaf",47:"Muhammad",48:"Al-Fath",49:"Al-Hujurat",50:"Qaf",51:"Adh-Dhariyat",52:"At-Tur",53:"An-Najm",54:"Al-Qamar",55:"Ar-Rahman",56:"Al-Waqiah",57:"Al-Hadid",58:"Al-Mujadila",59:"Al-Hashr",60:"Al-Mumtahanah",61:"As-Saf",62:"Al-Jumuah",63:"Al-Munafiqun",64:"At-Taghabun",65:"At-Talaq",66:"At-Tahrim",67:"Al-Mulk",68:"Al-Qalam",69:"Al-Haqqah",70:"Al-Maarij",71:"Nuh",72:"Al-Jinn",73:"Al-Muzzammil",74:"Al-Muddaththir",75:"Al-Qiyamah",76:"Al-Insan",77:"Al-Mursalat",78:"An-Naba",79:"An-Naziat",80:"Abasa",81:"At-Takwir",82:"Al-Infitar",83:"Al-Mutaffifin",84:"Al-Inshiqaq",85:"Al-Buruj",86:"At-Tariq",87:"Al-Ala",88:"Al-Ghashiyah",89:"Al-Fajr",90:"Al-Balad",91:"Ash-Shams",92:"Al-Layl",93:"Ad-Duha",94:"Ash-Sharh",95:"At-Tin",96:"Al-Alaq",97:"Al-Qadr",98:"Al-Bayyinah",99:"Az-Zalzalah",100:"Al-Adiyat",101:"Al-Qariah",102:"At-Takathur",103:"Al-Asr",104:"Al-Humazah",105:"Al-Fil",106:"Quraysh",107:"Al-Maun",108:"Al-Kawthar",109:"Al-Kafirun",110:"An-Nasr",111:"Al-Masad",112:"Al-Ikhlas",113:"Al-Falaq",114:"An-Nas"};
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let notes = [], fetchedArabic = '', fetchedTrans = '', fetchedRef = '';
+const SURAHS={1:"Al-Fatihah",2:"Al-Baqarah",3:"Aal-Imran",4:"An-Nisa",5:"Al-Maidah",6:"Al-Anam",7:"Al-Araf",8:"Al-Anfal",9:"At-Tawbah",10:"Yunus",11:"Hud",12:"Yusuf",13:"Ar-Rad",14:"Ibrahim",15:"Al-Hijr",16:"An-Nahl",17:"Al-Isra",18:"Al-Kahf",19:"Maryam",20:"Ta-Ha",21:"Al-Anbiya",22:"Al-Hajj",23:"Al-Muminun",24:"An-Nur",25:"Al-Furqan",26:"Ash-Shuara",27:"An-Naml",28:"Al-Qasas",29:"Al-Ankabut",30:"Ar-Rum",31:"Luqman",32:"As-Sajdah",33:"Al-Ahzab",34:"Saba",35:"Fatir",36:"Ya-Sin",37:"As-Saffat",38:"Sad",39:"Az-Zumar",40:"Ghafir",41:"Fussilat",42:"Ash-Shura",43:"Az-Zukhruf",44:"Ad-Dukhan",45:"Al-Jathiyah",46:"Al-Ahqaf",47:"Muhammad",48:"Al-Fath",49:"Al-Hujurat",50:"Qaf",51:"Adh-Dhariyat",52:"At-Tur",53:"An-Najm",54:"Al-Qamar",55:"Ar-Rahman",56:"Al-Waqiah",57:"Al-Hadid",58:"Al-Mujadila",59:"Al-Hashr",60:"Al-Mumtahanah",61:"As-Saf",62:"Al-Jumuah",63:"Al-Munafiqun",64:"At-Taghabun",65:"At-Talaq",66:"At-Tahrim",67:"Al-Mulk",68:"Al-Qalam",69:"Al-Haqqah",70:"Al-Maarij",71:"Nuh",72:"Al-Jinn",73:"Al-Muzzammil",74:"Al-Muddaththir",75:"Al-Qiyamah",76:"Al-Insan",77:"Al-Mursalat",78:"An-Naba",79:"An-Naziat",80:"Abasa",81:"At-Takwir",82:"Al-Infitar",83:"Al-Mutaffifin",84:"Al-Inshiqaq",85:"Al-Buruj",86:"At-Tariq",87:"Al-Ala",88:"Al-Ghashiyah",89:"Al-Fajr",90:"Al-Balad",91:"Ash-Shams",92:"Al-Layl",93:"Ad-Duha",94:"Ash-Sharh",95:"At-Tin",96:"Al-Alaq",97:"Al-Qadr",98:"Al-Bayyinah",99:"Az-Zalzalah",100:"Al-Adiyat",101:"Al-Qariah",102:"At-Takathur",103:"Al-Asr",104:"Al-Humazah",105:"Al-Fil",106:"Quraysh",107:"Al-Maun",108:"Al-Kawthar",109:"Al-Kafirun",110:"An-Nasr",111:"Al-Masad",112:"Al-Ikhlas",113:"Al-Falaq",114:"An-Nas"};
 
-function badge(state, text) {
-  const b = document.getElementById('sync-badge');
-  b.className = 'sync-badge ' + state;
-  b.innerHTML = state === 'loading' ? `<div class="spinner"></div><span>${text}</span>` : `<span>${text}</span>`;
+let notes=[], fetchedArabic='', fetchedTrans='', fetchedRef='', currentUser=null;
+
+function badge(state,text){const b=document.getElementById('sync-badge');b.className='sync-badge '+state;b.innerHTML=state==='loading'?`<div class="spinner"></div><span>${text}</span>`:`<span>${text}</span>`}
+
+async function signInWithGoogle(){
+  await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:REDIRECT_URL}});
 }
 
-async function dbFetch() {
-  const r = await fetch(`${API}?order=id.desc`, { headers: H });
-  if (!r.ok) throw new Error(await r.text());
-  return r.json();
+async function signOut(){
+  await sb.auth.signOut();
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  notes=[];
 }
 
-async function dbInsert(row) {
-  const r = await fetch(API, { method: 'POST', headers: H, body: JSON.stringify(row) });
-  if (!r.ok) throw new Error(await r.text());
-  return r.json();
-}
+sb.auth.onAuthStateChange(async(event,session)=>{
+  if(session&&session.user){
+    currentUser=session.user;
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    document.getElementById('user-email').textContent=session.user.email;
+    await loadNotes();
+  } else {
+    currentUser=null;
+    document.getElementById('app').style.display='none';
+    document.getElementById('login-screen').style.display='flex';
+  }
+});
 
-async function dbDelete(id) {
-  const r = await fetch(`${API}?id=eq.${id}`, { method: 'DELETE', headers: { ...H, 'Prefer': 'return=minimal' } });
-  if (!r.ok) throw new Error(await r.text());
-}
-
-async function loadNotes() {
-  badge('loading', 'Syncing…');
-  try {
-    const rows = await dbFetch();
-    notes = rows.map(r => ({ id: r.id, date: r.note_date, surahNum: r.surah_num, surahName: r.surah_name, ayah: r.ayah, level: r.level, arabic: r.arabic, translation: r.translation, groupNotes: r.group_notes, tafseer: r.tafseer, reflection: r.reflection, action: r.action }));
-    badge('ok', '✓ Synced');
-    renderNotes(); renderStats(); populateFilter();
-  } catch(e) {
-    badge('err', '⚠ Connection error');
-    document.getElementById('notes-list').innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><h3>Could not connect</h3><p>Check your internet connection and that the Supabase table exists, then refresh.</p><p style="margin-top:8px;font-size:12px;color:var(--ink-faint)">${e.message}</p></div>`;
+async function loadNotes(){
+  badge('loading','Syncing…');
+  try{
+    const{data,error}=await sb.from('notes').select('*').order('id',{ascending:false});
+    if(error)throw error;
+    notes=data.map(r=>({id:r.id,date:r.note_date,surahNum:r.surah_num,surahName:r.surah_name,ayah:r.ayah,level:r.level,arabic:r.arabic,translation:r.translation,groupNotes:r.group_notes,tafseer:r.tafseer,reflection:r.reflection,action:r.action}));
+    badge('ok','✓ Synced');
+    renderNotes();renderStats();populateFilter();
+  }catch(e){
+    badge('err','⚠ Connection error');
+    document.getElementById('notes-list').innerHTML=`<div class="empty-state"><div class="empty-icon">⚠️</div><h3>Could not load notes</h3><p>${e.message}</p></div>`;
   }
 }
 
-function autoName() {
-  const n = parseInt(document.getElementById('surah-num').value);
-  document.getElementById('surah-name').value = SURAHS[n] || '';
-}
+function autoName(){const n=parseInt(document.getElementById('surah-num').value);document.getElementById('surah-name').value=SURAHS[n]||'';}
 
-async function fetchAyat() {
-  const sn = parseInt(document.getElementById('surah-num').value);
-  const from = parseInt(document.getElementById('ayah-from').value);
-  const toV = document.getElementById('ayah-to').value;
-  const to = toV ? parseInt(toV) : from;
-  const tid = document.getElementById('trans-id').value;
-  const msg = document.getElementById('fetch-msg');
-  const btn = document.getElementById('fetch-btn');
-  const prev = document.getElementById('ayah-preview');
-
-  if (!sn||sn<1||sn>114) { msg.className='status-msg err'; msg.textContent='Enter a valid surah number (1–114).'; return; }
-  if (!from||from<1)      { msg.className='status-msg err'; msg.textContent='Enter a valid aayah number.'; return; }
-  if (to<from)            { msg.className='status-msg err'; msg.textContent='"To" must be ≥ "From".'; return; }
-
-  btn.disabled = true;
-  msg.className = 'status-msg loading';
-  msg.textContent = `Fetching ${SURAHS[sn]||'Surah '+sn} ${sn}:${from}${to!==from?'–'+to:''} …`;
-  fetchedArabic = ''; fetchedTrans = '';
-  prev.classList.remove('visible');
-
-  const arabics = [], transs = [];
-  try {
-    for (let i = from; i <= to; i++) {
-      const r = await fetch(`https://api.quran.com/api/v4/verses/by_key/${sn}:${i}?translations=${tid}&fields=text_uthmani`);
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      const d = await r.json();
-      const v = d.verse;
+async function fetchAyat(){
+  const sn=parseInt(document.getElementById('surah-num').value);
+  const from=parseInt(document.getElementById('ayah-from').value);
+  const toV=document.getElementById('ayah-to').value;
+  const to=toV?parseInt(toV):from;
+  const tid=document.getElementById('trans-id').value;
+  const msg=document.getElementById('fetch-msg');
+  const btn=document.getElementById('fetch-btn');
+  const prev=document.getElementById('ayah-preview');
+  if(!sn||sn<1||sn>114){msg.className='status-msg err';msg.textContent='Enter a valid surah number (1–114).';return;}
+  if(!from||from<1){msg.className='status-msg err';msg.textContent='Enter a valid aayah number.';return;}
+  if(to<from){msg.className='status-msg err';msg.textContent='"To" must be ≥ "From".';return;}
+  btn.disabled=true;msg.className='status-msg loading';msg.textContent=`Fetching ${SURAHS[sn]||'Surah '+sn} ${sn}:${from}${to!==from?'–'+to:''} …`;
+  fetchedArabic='';fetchedTrans='';prev.classList.remove('visible');
+  const arabics=[],transs=[];
+  try{
+    for(let i=from;i<=to;i++){
+      const r=await fetch(`https://api.quran.com/api/v4/verses/by_key/${sn}:${i}?translations=${tid}&fields=text_uthmani`);
+      if(!r.ok)throw new Error(`HTTP ${r.status}`);
+      const d=await r.json();const v=d.verse;
       arabics.push(`${v.text_uthmani}  ﴿${i}﴾`);
-      if (v.translations&&v.translations[0]) transs.push(`(${i}) ${v.translations[0].text.replace(/<[^>]+>/g,'')}`);
+      if(v.translations&&v.translations[0])transs.push(`(${i}) ${v.translations[0].text.replace(/<[^>]+>/g,'')}`);
     }
-    fetchedArabic = arabics.join('\n');
-    fetchedTrans  = transs.join('\n');
-    fetchedRef    = `${SURAHS[sn]||'Surah '+sn} ${sn}:${from}${to!==from?'–'+to:''}`;
-    document.getElementById('prev-ref').textContent    = fetchedRef;
-    document.getElementById('prev-arabic').textContent = fetchedArabic;
-    document.getElementById('prev-trans').textContent  = fetchedTrans;
-    prev.classList.add('visible');
-    msg.className = 'status-msg'; msg.textContent = '';
-  } catch(e) {
-    msg.className = 'status-msg err';
-    msg.textContent = `Could not fetch. Check internet connection. (${e.message})`;
-  }
-  btn.disabled = false;
+    fetchedArabic=arabics.join('\n');fetchedTrans=transs.join('\n');
+    fetchedRef=`${SURAHS[sn]||'Surah '+sn} ${sn}:${from}${to!==from?'–'+to:''}`;
+    document.getElementById('prev-ref').textContent=fetchedRef;
+    document.getElementById('prev-arabic').textContent=fetchedArabic;
+    document.getElementById('prev-trans').textContent=fetchedTrans;
+    prev.classList.add('visible');msg.className='status-msg';msg.textContent='';
+  }catch(e){msg.className='status-msg err';msg.textContent=`Could not fetch. (${e.message})`;}
+  btn.disabled=false;
 }
 
-async function saveNote() {
-  const sn         = document.getElementById('surah-num').value.trim();
-  const name       = document.getElementById('surah-name').value.trim();
-  const from       = document.getElementById('ayah-from').value.trim();
-  const to         = document.getElementById('ayah-to').value.trim();
-  const level      = document.getElementById('level').value;
-  const groupNotes = document.getElementById('group-notes').value.trim();
-  const tafseer    = document.getElementById('tafseer').value.trim();
-  const reflection = document.getElementById('reflection').value.trim();
-  const action     = document.getElementById('action').value.trim();
-  const saveMsg    = document.getElementById('save-msg');
-  const saveBtn    = document.getElementById('save-btn');
-
-  if (!sn&&!name)                                          { alert('Please enter a surah number.'); return; }
-  if (!groupNotes&&!reflection&&!tafseer&&!action)         { alert('Please add at least one note before saving.'); return; }
-
-  const ayahLabel = from ? (to && to!==from ? `${from}–${to}` : from) : 'surah level';
-  const row = {
-    id:          Date.now(),
-    note_date:   new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}),
-    surah_num:   sn,
-    surah_name:  name || SURAHS[parseInt(sn)] || '',
-    ayah:        String(ayahLabel),
-    level,
-    arabic:      fetchedArabic || null,
-    translation: fetchedTrans  || null,
-    group_notes: groupNotes    || null,
-    tafseer:     tafseer       || null,
-    reflection:  reflection    || null,
-    action:      action        || null
-  };
-
-  saveBtn.disabled = true;
-  saveMsg.className = 'status-msg loading'; saveMsg.textContent = 'Saving…';
-  badge('loading', 'Saving…');
-
-  try {
-    await dbInsert(row);
-    notes.unshift({ id: row.id, date: row.note_date, surahNum: row.surah_num, surahName: row.surah_name, ayah: row.ayah, level, arabic: fetchedArabic, translation: fetchedTrans, groupNotes, tafseer, reflection, action });
-    renderNotes(); renderStats(); populateFilter();
-    badge('ok', '✓ Synced');
-    saveMsg.className = 'status-msg'; saveMsg.textContent = '';
-    ['surah-num','surah-name','ayah-from','ayah-to','group-notes','tafseer','reflection','action'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('level').value = 'Aayat-level';
+async function saveNote(){
+  const sn=document.getElementById('surah-num').value.trim();
+  const name=document.getElementById('surah-name').value.trim();
+  const from=document.getElementById('ayah-from').value.trim();
+  const to=document.getElementById('ayah-to').value.trim();
+  const level=document.getElementById('level').value;
+  const groupNotes=document.getElementById('group-notes').value.trim();
+  const tafseer=document.getElementById('tafseer').value.trim();
+  const reflection=document.getElementById('reflection').value.trim();
+  const action=document.getElementById('action').value.trim();
+  const saveMsg=document.getElementById('save-msg');
+  const saveBtn=document.getElementById('save-btn');
+  if(!sn&&!name){alert('Please enter a surah number.');return;}
+  if(!groupNotes&&!reflection&&!tafseer&&!action){alert('Please add at least one note before saving.');return;}
+  const ayahLabel=from?(to&&to!==from?`${from}–${to}`:from):'surah level';
+  const row={id:Date.now(),note_date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}),surah_num:sn,surah_name:name||SURAHS[parseInt(sn)]||'',ayah:String(ayahLabel),level,arabic:fetchedArabic||null,translation:fetchedTrans||null,group_notes:groupNotes||null,tafseer:tafseer||null,reflection:reflection||null,action:action||null,user_id:currentUser.id};
+  saveBtn.disabled=true;saveMsg.className='status-msg loading';saveMsg.textContent='Saving…';badge('loading','Saving…');
+  try{
+    const{error}=await sb.from('notes').insert(row);
+    if(error)throw error;
+    notes.unshift({id:row.id,date:row.note_date,surahNum:row.surah_num,surahName:row.surah_name,ayah:row.ayah,level,arabic:fetchedArabic,translation:fetchedTrans,groupNotes,tafseer,reflection,action});
+    renderNotes();renderStats();populateFilter();
+    badge('ok','✓ Synced');saveMsg.className='status-msg';saveMsg.textContent='';
+    ['surah-num','surah-name','ayah-from','ayah-to','group-notes','tafseer','reflection','action'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('level').value='Aayat-level';
     document.getElementById('ayah-preview').classList.remove('visible');
-    document.getElementById('fetch-msg').textContent = '';
-    fetchedArabic = ''; fetchedTrans = ''; fetchedRef = '';
+    document.getElementById('fetch-msg').textContent='';
+    fetchedArabic='';fetchedTrans='';fetchedRef='';
     showTab('browse');
-  } catch(e) {
-    badge('err', '⚠ Save failed');
-    saveMsg.className = 'status-msg err';
-    saveMsg.textContent = 'Could not save — check connection. (' + e.message + ')';
-  }
-  saveBtn.disabled = false;
+  }catch(e){badge('err','⚠ Save failed');saveMsg.className='status-msg err';saveMsg.textContent='Could not save. ('+e.message+')';}
+  saveBtn.disabled=false;
 }
 
-async function deleteNote(id) {
-  if (!confirm('Delete this note?')) return;
-  badge('loading', 'Deleting…');
-  try {
-    await dbDelete(id);
-    notes = notes.filter(n => n.id !== id);
-    renderNotes(); renderStats(); populateFilter();
-    badge('ok', '✓ Synced');
-  } catch(e) {
-    badge('err', '⚠ Delete failed');
-    alert('Could not delete: ' + e.message);
-  }
+async function deleteNote(id){
+  if(!confirm('Delete this note?'))return;
+  badge('loading','Deleting…');
+  try{
+    const{error}=await sb.from('notes').delete().eq('id',id);
+    if(error)throw error;
+    notes=notes.filter(n=>n.id!==id);
+    renderNotes();renderStats();populateFilter();badge('ok','✓ Synced');
+  }catch(e){badge('err','⚠ Delete failed');alert('Could not delete: '+e.message);}
 }
 
-function populateFilter() {
-  const sel = document.getElementById('filter-surah');
-  const cur = sel.value;
-  const seen = new Set();
-  const opts = ['<option value="">All surahs</option>'];
-  notes.forEach(n => { const k=n.surahNum+'|'+n.surahName; if(!seen.has(k)){seen.add(k);opts.push(`<option value="${k}">${n.surahNum?n.surahNum+'. ':''}${n.surahName}</option>`);} });
-  sel.innerHTML = opts.join('');
-  if (cur) sel.value = cur;
+function populateFilter(){
+  const sel=document.getElementById('filter-surah');const cur=sel.value;
+  const seen=new Set();const opts=['<option value="">All surahs</option>'];
+  notes.forEach(n=>{const k=n.surahNum+'|'+n.surahName;if(!seen.has(k)){seen.add(k);opts.push(`<option value="${k}">${n.surahNum?n.surahNum+'. ':''}${n.surahName}</option>');}});
+  sel.innerHTML=opts.join('');if(cur)sel.value=cur;
 }
 
-function renderNotes(search) {
-  const searchEl = document.querySelector('#tab-browse input[type=text]');
-  const searchVal = (search !== undefined ? search : (searchEl ? searchEl.value : '')).toLowerCase();
-  const sf = document.getElementById('filter-surah').value;
-  const lf = document.getElementById('filter-level').value;
-  let filtered = notes.filter(n => {
-    if (sf && (n.surahNum+'|'+n.surahName) !== sf) return false;
-    if (lf && n.level !== lf) return false;
-    if (searchVal) { const blob=[n.surahName,n.ayah,n.arabic,n.translation,n.groupNotes,n.tafseer,n.reflection,n.action].join(' ').toLowerCase(); if(!blob.includes(searchVal)) return false; }
+function renderNotes(search){
+  const searchEl=document.querySelector('#tab-browse input[type=text]');
+  const searchVal=(search!==undefined?search:(searchEl?searchEl.value:'')).toLowerCase();
+  const sf=document.getElementById('filter-surah').value;
+  const lf=document.getElementById('filter-level').value;
+  let filtered=notes.filter(n=>{
+    if(sf&&(n.surahNum+'|'+n.surahName)!==sf)return false;
+    if(lf&&n.level!==lf)return false;
+    if(searchVal){const blob=[n.surahName,n.ayah,n.arabic,n.translation,n.groupNotes,n.tafseer,n.reflection,n.action].join(' ').toLowerCase();if(!blob.includes(searchVal))return false;}
     return true;
   });
-  const list = document.getElementById('notes-list');
-  if (!filtered.length) { list.innerHTML = notes.length ? `<div class="empty-state"><div class="empty-icon">🔍</div><h3>No matches</h3><p>Try a different search or filter.</p></div>` : `<div class="empty-state"><div class="empty-icon">📖</div><h3>No notes yet</h3><p>Add your first note from the <strong>Add note</strong> tab.</p></div>`; return; }
-  list.innerHTML = filtered.map(n => `
+  const list=document.getElementById('notes-list');
+  if(!filtered.length){list.innerHTML=notes.length?`<div class="empty-state"><div class="empty-icon">🔍</div><h3>No matches</h3><p>Try a different search or filter.</p></div>`:`<div class="empty-state"><div class="empty-icon">📖</div><h3>No notes yet</h3><p>Add your first note from the <strong>Add note</strong> tab.</p></div>`;return;}
+  list.innerHTML=filtered.map(n=>`
     <div class="note-card">
       <div class="note-card-top">
-        <div>
-          <div class="note-surah">${n.surahNum?n.surahNum+'. ':''}${n.surahName}</div>
-          ${n.ayah?`<div class="note-ayah">Aayah ${n.ayah}</div>`:''}
-        </div>
+        <div><div class="note-surah">${n.surahNum?n.surahNum+'. ':''}${n.surahName}</div>${n.ayah?`<div class="note-ayah">Aayah ${n.ayah}</div>`:''}</div>
         <button class="del-btn" onclick="deleteNote(${n.id})" title="Delete">&#10005;</button>
       </div>
       <div class="note-meta"><span class="chip teal">${n.level}</span><span class="chip">${n.date}</span></div>
       ${n.arabic?`<div class="note-arabic-mini">${n.arabic}</div>`:''}
       ${n.translation?`<div class="note-trans-mini">${n.translation.substring(0,280)}${n.translation.length>280?'…':''}</div>`:''}
       <div class="note-fields">
-        ${n.groupNotes ?`<div class="nf full"><div class="nf-label">Study group notes</div><div class="nf-val">${n.groupNotes}</div></div>`:''}
-        ${n.tafseer    ?`<div class="nf"><div class="nf-label">Tafseer</div><div class="nf-val">${n.tafseer}</div></div>`:''}
-        ${n.reflection ?`<div class="nf"><div class="nf-label">Reflection</div><div class="nf-val">${n.reflection}</div></div>`:''}
-        ${n.action     ?`<div class="nf full"><div class="nf-label">Action point</div><div class="nf-val"><span class="action-pill">✓ ${n.action}</span></div></div>`:''}
+        ${n.groupNotes?`<div class="nf full"><div class="nf-label">Study group notes</div><div class="nf-val">${n.groupNotes}</div></div>`:''}
+        ${n.tafseer?`<div class="nf"><div class="nf-label">Tafseer</div><div class="nf-val">${n.tafseer}</div></div>`:''}
+        ${n.reflection?`<div class="nf"><div class="nf-label">Reflection</div><div class="nf-val">${n.reflection}</div></div>`:''}
+        ${n.action?`<div class="nf full"><div class="nf-label">Action point</div><div class="nf-val"><span class="action-pill">✓ ${n.action}</span></div></div>`:''}
       </div>
     </div>`).join('');
 }
 
-function renderStats() {
-  document.getElementById('s-total').textContent   = notes.length;
-  document.getElementById('s-surahs').textContent  = new Set(notes.map(n=>n.surahNum||n.surahName)).size;
-  document.getElementById('s-actions').textContent = notes.filter(n=>n.action).length;
-  const byS = {};
-  notes.forEach(n => { const k=(n.surahNum?n.surahNum+'. ':'')+n.surahName; if(!byS[k])byS[k]=[]; byS[k].push(n); });
-  document.getElementById('surah-breakdown').innerHTML = Object.entries(byS).map(([s,ns]) => `
+function renderStats(){
+  document.getElementById('s-total').textContent=notes.length;
+  document.getElementById('s-surahs').textContent=new Set(notes.map(n=>n.surahNum||n.surahName)).size;
+  document.getElementById('s-actions').textContent=notes.filter(n=>n.action).length;
+  const byS={};notes.forEach(n=>{const k=(n.surahNum?n.surahNum+'. ':'')+n.surahName;if(!byS[k])byS[k]=[];byS[k].push(n);});
+  document.getElementById('surah-breakdown').innerHTML=Object.entries(byS).map(([s,ns])=>`
     <div class="note-card" style="margin-bottom:10px">
       <div class="note-surah">${s}</div>
       <div style="margin-top:6px;font-size:13px;color:var(--ink-muted)">${ns.length} note${ns.length!==1?'s':''} · aayaat: ${ns.map(n=>n.ayah||'surah').join(', ')}</div>
-    </div>`).join('') || `<div class="empty-state"><div class="empty-icon">📋</div><h3>Nothing yet</h3><p>Studied surahs will appear here.</p></div>`;
+    </div>`).join('')||`<div class="empty-state"><div class="empty-icon">📋</div><h3>Nothing yet</h3><p>Studied surahs will appear here.</p></div>`;
 }
 
-function showTab(id) {
-  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['add','browse','overview'][i]===id));
-  document.querySelectorAll('.section').forEach((s,i) => s.classList.toggle('active', ['tab-add','tab-browse','tab-overview'][i]==='tab-'+id));
+function showTab(id){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['add','browse','overview'][i]===id));
+  document.querySelectorAll('.section').forEach((s,i)=>s.classList.toggle('active',['tab-add','tab-browse','tab-overview'][i]==='tab-'+id));
 }
-
-loadNotes();
 </script>
 </body>
 </html>
