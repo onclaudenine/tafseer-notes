@@ -151,8 +151,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 /* root letter tooltip */
 .wbw-word{position:relative}
 .wbw-word:hover .root-tip{display:flex}
-.root-tip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:white;border-radius:var(--radius);padding:6px 10px;white-space:nowrap;z-index:50;flex-direction:column;align-items:center;gap:2px;min-width:60px;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
-.root-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--ink)}
+.root-tip{display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:white;border-radius:var(--radius);padding:6px 10px;white-space:nowrap;z-index:200;flex-direction:column;align-items:center;gap:2px;min-width:60px;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.root-tip::after{content:'';position:absolute;bottom:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-bottom-color:var(--ink)}
 .root-tip-label{font-size:9px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.05em}
 .root-tip-arabic{font-family:"Amiri",serif;font-size:1.1rem;direction:rtl;color:white;line-height:1.4}
 .root-tip-loading{font-size:10px;color:rgba(255,255,255,0.5);font-style:italic}
@@ -161,8 +161,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .wbw-toggle{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 12px;background:var(--gold-light);color:var(--gold);border:1px solid #e8d0a8;border-radius:99px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
 .wbw-toggle:hover{background:#faeeda}
 .wbw-toggle.active{background:var(--teal-light);color:var(--teal);border-color:#9fe1cb}
-.wbw-container{margin-top:12px;display:none;overflow-x:auto;padding-bottom:4px}
+.wbw-container{margin-top:12px;display:none;padding-bottom:4px}
 .wbw-container.visible{display:block}
+.wbw-scroll{overflow-x:auto;padding-bottom:4px;padding-top:50px;margin-top:-46px}
 .wbw-table{display:flex;flex-direction:row-reverse;flex-wrap:wrap;gap:4px;justify-content:flex-start}
 .wbw-word{display:flex;flex-direction:column;align-items:center;padding:8px 10px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);min-width:60px;max-width:120px;text-align:center;transition:background .15s;cursor:default}
 .wbw-word:hover{background:var(--teal-pale);border-color:var(--teal-light)}
@@ -1876,39 +1877,15 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   var rootsLoadCallbacks = [];
 
   // Verse rank lookup: surah*1000+ayah -> rank
-  var AYAH_COUNTS = [7,286,200,176,120,165,206,75,129,109,
-    123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,
-    227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,
-    89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,
-    14,11,11,18,12,12,30,52,52,68,44,28,28,20,56,40,31,50,
-    45,33,27,57,29,19,18,33,8,24,42,32,40,15,6,29,19,18,33,
-    8,24,42,32,40,15,6,3,10,5,4,5,8,4,5,7,3,6,3,5,4,5,6];
-  // Correct to 114 surahs
-  AYAH_COUNTS = [7,286,200,176,120,165,206,75,129,109,
-    123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,
-    227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,
-    89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,
-    14,11,11,18,12,12,30,52,52,68,44,28,28,20,56,40,31,50,
-    45,33,27,57,29,19,18,33,8,24,42,32,40,15,6,29,19,18,33,
-    8,24,42,32,40,15,6,3,10,5,4,5,8,4,5,7,3,6,3,5,4,5,6];
+
 
   // Build rankToKey array: index=verse_rank -> "surah:ayah"
+  // Verified 114 surahs, 6236 ayaat (Hafs recitation)
   var rankToKey = (function() {
+    var counts = [7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
     var map = [];
-    // Use verified counts: total must be 6236
-    var counts = [7,286,200,176,120,165,206,75,129,109,
-      123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,
-      227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,
-      89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,
-      14,11,11,18,12,12,30,52,52,68,44,28,28,20,56,40,31,50,
-      45,33,27,57,29,19,18,33,8,24,42,32,40,15,6,29,19,18,33,
-      8,24,42,32,40,15,6,3,10,5,4,5,8,4,5,7,3,6,3,5,4,5,6,
-      // Fix last surahs: 111-114
-      5,4,5,6];
-    // Remove duplicates in last entries - rebuild properly
-    var correctCounts = [7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
-    for (var s = 0; s < correctCounts.length; s++) {
-      for (var a = 1; a <= correctCounts[s]; a++) {
+    for (var s = 0; s < counts.length; s++) {
+      for (var a = 1; a <= counts[s]; a++) {
         map.push((s+1) + ':' + a);
       }
     }
@@ -1982,7 +1959,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       });
     });
     html += '</div>';
-    container.innerHTML = html;
+    container.innerHTML = '<div class="wbw-scroll">' + html + '</div>';
 
     // Load roots and fill in tooltips
     if (surahNum && ayahFrom !== undefined) {
