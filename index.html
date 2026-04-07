@@ -1939,6 +1939,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       // Debug: log the first few occurrence keys and first 3 roots to console
       var firstEntry = data[0];
       var secondEntry = data[1];
+      console.log('[Roots] Data type:', Array.isArray(data) ? 'array len='+data.length : typeof data);
+      console.log('[Roots] First entry raw:', JSON.stringify(data[0] || Object.keys(data).slice(0,3)));
+      if (!Array.isArray(data)) {
+        // Maybe it's an object - check its structure
+        var keys = Object.keys(data);
+        console.log('[Roots] Object keys sample:', keys.slice(0,5));
+        console.log('[Roots] First value:', JSON.stringify(data[keys[0]]));
+      }
       console.log('[Roots] First root:', firstEntry && firstEntry.root, 'first 3 occurrences:', firstEntry && firstEntry.occurrences && firstEntry.occurrences.slice(0,3));
       console.log('[Roots] Second root:', secondEntry && secondEntry.root, 'first 3 occurrences:', secondEntry && secondEntry.occurrences && secondEntry.occurrences.slice(0,3));
       console.log('[Roots] Total entries in wordRootMap:', Object.keys(wordRootMap).length);
