@@ -173,10 +173,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .lang-tabs{display:flex;gap:0;margin-bottom:6px;border:.5px solid var(--border);border-radius:var(--radius);overflow:hidden;width:fit-content}
 .lang-tab{padding:5px 14px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:var(--surface-2);color:var(--ink-muted);transition:all .2s;font-family:"DM Sans",sans-serif}
 .lang-tab.active{background:var(--teal);color:white}
-.note-arabic-field{display:none}
-.note-arabic-field.visible{display:block}
-.note-english-field{display:block}
-.note-english-field.hidden{display:none}
+/* lang field visibility controlled via inline style.display */
 
 /* @ reference autocomplete */
 .ref-wrap{position:relative}
@@ -279,11 +276,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         </div>
         <div class="note-english-field" id="group-notes-en-wrap">
           <div class="ref-wrap">
-<div class="rich-editor-wrap"><div class="rich-toolbar"><button onmousedown="event.preventDefault();document.execCommand('bold')" title="Bold"><b>B</b></button><button onmousedown="event.preventDefault();document.execCommand('italic')" title="Italic"><i>I</i></button><button onmousedown="event.preventDefault();document.execCommand('underline')" title="Underline"><u>U</u></button><div class="sep"></div><button onmousedown="event.preventDefault();document.execCommand('insertUnorderedList')" title="Bullet list">&#8226; List</button><button onmousedown="event.preventDefault();document.execCommand('insertOrderedList')" title="Numbered list">1. List</button><div class="sep"></div><button onmousedown="event.preventDefault();document.execCommand('removeFormat')" title="Clear formatting">Clear</button></div><div class="rich-content" id="group-notes" contenteditable="true" style="min-height:90px;" data-placeholder="Key points from the halaqah, teacher's explanation..."></div></div>
+<div class="rich-editor-wrap"><div class="rich-toolbar"><button onmousedown="event.preventDefault();fmtCmd('bold')" title="Bold"><b>B</b></button><button onmousedown="event.preventDefault();fmtCmd('italic')" title="Italic"><i>I</i></button><button onmousedown="event.preventDefault();fmtCmd('underline')" title="Underline"><u>U</u></button><div class="sep"></div><button onmousedown="event.preventDefault();fmtCmd('insertUnorderedList')" title="Bullet list">&#8226; List</button><button onmousedown="event.preventDefault();fmtCmd('insertOrderedList')" title="Numbered list">1. List</button><div class="sep"></div><button onmousedown="event.preventDefault();fmtCmd('removeFormat')" title="Clear formatting">Clear</button></div><div class="rich-content" id="group-notes" contenteditable="true" style="min-height:90px;" data-placeholder="Key points from the halaqah, teacher's explanation..."></div></div>
             <div class="ref-dropdown" id="ref-dropdown"></div>
           </div>
         </div>
-        <div class="note-arabic-field" id="group-notes-ar-wrap">
+        <div class="note-arabic-field" id="group-notes-ar-wrap" style="display:none">
 <div class="rich-editor-wrap"><div class="rich-content arabic" id="group-notes-ar" contenteditable="true" style="min-height:90px;direction:rtl;text-align:right;" data-placeholder="أضف ملاحظاتك باللغة العربية..."></div></div>
         </div>
         <div class="ref-hint">Tip: type @2:255 to reference an aayah inline</div>
@@ -295,9 +292,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <button class="lang-tab" onclick="switchReflectLang('both',this)">Both</button>
         </div>
         <div class="note-english-field" id="reflection-en-wrap">
-<div class="rich-editor-wrap"><div class="rich-toolbar"><button onmousedown="event.preventDefault();document.execCommand('bold')" title="Bold"><b>B</b></button><button onmousedown="event.preventDefault();document.execCommand('italic')" title="Italic"><i>I</i></button><button onmousedown="event.preventDefault();document.execCommand('underline')" title="Underline"><u>U</u></button><div class="sep"></div><button onmousedown="event.preventDefault();document.execCommand('insertUnorderedList')" title="Bullet list">&#8226; List</button><button onmousedown="event.preventDefault();document.execCommand('insertOrderedList')" title="Numbered list">1. List</button><div class="sep"></div><button onmousedown="event.preventDefault();document.execCommand('removeFormat')" title="Clear formatting">Clear</button></div><div class="rich-content" id="reflection" contenteditable="true" style="min-height:90px;" data-placeholder="What does this aayah mean to me personally?"></div></div>
+<div class="rich-editor-wrap"><div class="rich-toolbar"><button onmousedown="event.preventDefault();fmtCmd('bold')" title="Bold"><b>B</b></button><button onmousedown="event.preventDefault();fmtCmd('italic')" title="Italic"><i>I</i></button><button onmousedown="event.preventDefault();fmtCmd('underline')" title="Underline"><u>U</u></button><div class="sep"></div><button onmousedown="event.preventDefault();fmtCmd('insertUnorderedList')" title="Bullet list">&#8226; List</button><button onmousedown="event.preventDefault();fmtCmd('insertOrderedList')" title="Numbered list">1. List</button><div class="sep"></div><button onmousedown="event.preventDefault();fmtCmd('removeFormat')" title="Clear formatting">Clear</button></div><div class="rich-content" id="reflection" contenteditable="true" style="min-height:90px;" data-placeholder="What does this aayah mean to me personally?"></div></div>
         </div>
-        <div class="note-arabic-field" id="reflection-ar-wrap">
+        <div class="note-arabic-field" id="reflection-ar-wrap" style="display:none">
 <div class="rich-editor-wrap"><div class="rich-content arabic" id="reflection-ar" contenteditable="true" style="min-height:90px;direction:rtl;text-align:right;" data-placeholder="ما الذي تعنيه هذه الآية بالنسبة لي؟..."></div></div>
         </div>
       </div>
@@ -413,11 +410,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
       <div class="note-english-field" id="edit-group-notes-en-wrap">
         <div class="ref-wrap">
-<div class="rich-editor-wrap"><div class="rich-toolbar"><button onmousedown="event.preventDefault();document.execCommand('bold')" title="Bold"><b>B</b></button><button onmousedown="event.preventDefault();document.execCommand('italic')" title="Italic"><i>I</i></button><button onmousedown="event.preventDefault();document.execCommand('underline')" title="Underline"><u>U</u></button><div class="sep"></div><button onmousedown="event.preventDefault();document.execCommand('insertUnorderedList')" title="Bullet list">&#8226; List</button><button onmousedown="event.preventDefault();document.execCommand('insertOrderedList')" title="Numbered list">1. List</button><div class="sep"></div><button onmousedown="event.preventDefault();document.execCommand('removeFormat')" title="Clear formatting">Clear</button></div><div class="rich-content" id="edit-group-notes" contenteditable="true" style="min-height:80px;" data-placeholder="Study group notes..."></div></div>
+<div class="rich-editor-wrap"><div class="rich-toolbar"><button onmousedown="event.preventDefault();fmtCmd('bold')" title="Bold"><b>B</b></button><button onmousedown="event.preventDefault();fmtCmd('italic')" title="Italic"><i>I</i></button><button onmousedown="event.preventDefault();fmtCmd('underline')" title="Underline"><u>U</u></button><div class="sep"></div><button onmousedown="event.preventDefault();fmtCmd('insertUnorderedList')" title="Bullet list">&#8226; List</button><button onmousedown="event.preventDefault();fmtCmd('insertOrderedList')" title="Numbered list">1. List</button><div class="sep"></div><button onmousedown="event.preventDefault();fmtCmd('removeFormat')" title="Clear formatting">Clear</button></div><div class="rich-content" id="edit-group-notes" contenteditable="true" style="min-height:80px;" data-placeholder="Study group notes..."></div></div>
           <div class="ref-dropdown" id="edit-ref-dropdown"></div>
         </div>
       </div>
-      <div class="note-arabic-field" id="edit-group-notes-ar-wrap">
+      <div class="note-arabic-field" id="edit-group-notes-ar-wrap" style="display:none">
 <div class="rich-editor-wrap"><div class="rich-content arabic" id="edit-group-notes-ar" contenteditable="true" style="min-height:80px;direction:rtl;text-align:right;" data-placeholder="أضف ملاحظاتك باللغة العربية..."></div></div>
       </div>
       <div class="ref-hint">Tip: type @2:255 to reference an aayah inline</div>
@@ -429,9 +426,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <button class="lang-tab" onclick="switchEditReflectLang('both',this)">Both</button>
       </div>
       <div class="note-english-field" id="edit-reflection-en-wrap">
-<div class="rich-editor-wrap"><div class="rich-toolbar"><button onmousedown="event.preventDefault();document.execCommand('bold')" title="Bold"><b>B</b></button><button onmousedown="event.preventDefault();document.execCommand('italic')" title="Italic"><i>I</i></button><button onmousedown="event.preventDefault();document.execCommand('underline')" title="Underline"><u>U</u></button><div class="sep"></div><button onmousedown="event.preventDefault();document.execCommand('insertUnorderedList')" title="Bullet list">&#8226; List</button><button onmousedown="event.preventDefault();document.execCommand('insertOrderedList')" title="Numbered list">1. List</button><div class="sep"></div><button onmousedown="event.preventDefault();document.execCommand('removeFormat')" title="Clear formatting">Clear</button></div><div class="rich-content" id="edit-reflection" contenteditable="true" style="min-height:80px;" data-placeholder="Personal reflection..."></div></div>
+<div class="rich-editor-wrap"><div class="rich-toolbar"><button onmousedown="event.preventDefault();fmtCmd('bold')" title="Bold"><b>B</b></button><button onmousedown="event.preventDefault();fmtCmd('italic')" title="Italic"><i>I</i></button><button onmousedown="event.preventDefault();fmtCmd('underline')" title="Underline"><u>U</u></button><div class="sep"></div><button onmousedown="event.preventDefault();fmtCmd('insertUnorderedList')" title="Bullet list">&#8226; List</button><button onmousedown="event.preventDefault();fmtCmd('insertOrderedList')" title="Numbered list">1. List</button><div class="sep"></div><button onmousedown="event.preventDefault();fmtCmd('removeFormat')" title="Clear formatting">Clear</button></div><div class="rich-content" id="edit-reflection" contenteditable="true" style="min-height:80px;" data-placeholder="Personal reflection..."></div></div>
       </div>
-      <div class="note-arabic-field" id="edit-reflection-ar-wrap">
+      <div class="note-arabic-field" id="edit-reflection-ar-wrap" style="display:none">
 <div class="rich-editor-wrap"><div class="rich-content arabic" id="edit-reflection-ar" contenteditable="true" style="min-height:80px;direction:rtl;text-align:right;" data-placeholder="ما الذي تعنيه هذه الآية بالنسبة لي؟..."></div></div>
       </div>
     </div>
@@ -1144,21 +1141,22 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     closeEdit();
   };
 
+  // ── RICH TEXT FORMATTING ──
+  window.fmtCmd = function(cmd) {
+    try {
+      document.execCommand(cmd, false, null);
+    } catch(e) {
+      console.warn('execCommand failed:', cmd, e);
+    }
+  };
+
   // ── LANGUAGE SWITCHER ──
   function switchLang(enId, arId, mode) {
     var enEl = document.getElementById(enId);
     var arEl = document.getElementById(arId);
     if (!enEl || !arEl) return;
-    if (mode === 'en') {
-      enEl.style.display = 'block';
-      arEl.style.display = 'none';
-    } else if (mode === 'ar') {
-      enEl.style.display = 'none';
-      arEl.style.display = 'block';
-    } else {
-      enEl.style.display = 'block';
-      arEl.style.display = 'block';
-    }
+    enEl.style.setProperty('display', mode === 'ar' ? 'none' : 'block', 'important');
+    arEl.style.setProperty('display', mode === 'en' ? 'none' : 'block', 'important');
   }
   function updateTabs(btn) {
     var tabs = btn.parentElement.querySelectorAll('.lang-tab');
