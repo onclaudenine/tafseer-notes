@@ -61,7 +61,16 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .arabic-text{font-family:"Amiri",serif;font-size:1.6rem;line-height:2;text-align:right;direction:rtl;border-bottom:1px solid var(--teal-light);padding-bottom:12px;margin-bottom:10px}
 .trans-text{font-family:"Lora",serif;font-size:.9rem;line-height:1.75;color:var(--ink-mid);font-style:italic}
 .status-msg{font-size:13px;padding:6px 0;min-height:24px;color:var(--ink-muted)}
-.status-msg.err{color:var(--danger)}.status-msg.loading{color:var(--teal-mid)}
+.status-msg.err{color:var(--danger)}.status-msg.loading{color:var(--teal-mid)}.status-msg.ok{color:var(--teal);font-weight:500}
+/* video study tab */
+.ts-item{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);transition:background .2s}
+.ts-item:hover{background:var(--teal-pale);border-color:var(--teal-light)}
+.ts-stamp{font-size:12px;font-weight:600;color:var(--teal);cursor:pointer;white-space:nowrap;padding:2px 8px;background:var(--teal-light);border-radius:99px;flex-shrink:0;border:1px solid #9fe1cb}
+.ts-stamp:hover{background:#9fe1cb}
+.ts-text{font-size:13px;color:var(--ink-mid);flex:1;line-height:1.5}
+.ts-text.arabic{font-family:"Amiri",serif;font-size:1rem;direction:rtl;text-align:right}
+.ts-delete{background:none;border:none;cursor:pointer;color:var(--ink-faint);font-size:15px;flex-shrink:0;padding:0 2px}
+.ts-delete:hover{color:var(--danger)}
 .divider{border:none;border-top:1px solid var(--border);margin:1.25rem 0}
 .section-label{font-family:"Lora",serif;font-size:.85rem;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem}
 /* attachments */
@@ -116,6 +125,55 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .empty-icon{font-size:2.5rem;margin-bottom:.75rem}
 .empty-state h3{font-family:"Lora",serif;font-size:1rem;color:var(--ink-mid);margin-bottom:6px}
 .empty-state p{font-size:13px;line-height:1.6}
+/* search */
+.search-chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid var(--border);background:var(--surface-2);color:var(--ink-muted);cursor:pointer;transition:all .2s}
+.search-chip:hover{border-color:var(--teal-mid);background:var(--teal-pale);color:var(--teal)}
+.search-chip.active{background:var(--teal-light);color:var(--teal);border-color:#9fe1cb}
+.search-highlight{background:#fff3a3;border-radius:2px;padding:0 1px}
+
+/* word-by-word */
+.wbw-toggle{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 12px;background:var(--gold-light);color:var(--gold);border:1px solid #e8d0a8;border-radius:99px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
+.wbw-toggle:hover{background:#faeeda}
+.wbw-toggle.active{background:var(--teal-light);color:var(--teal);border-color:#9fe1cb}
+.wbw-container{margin-top:12px;display:none;overflow-x:auto;padding-bottom:4px}
+.wbw-container.visible{display:block}
+.wbw-table{display:flex;flex-direction:row-reverse;flex-wrap:wrap;gap:4px;justify-content:flex-start}
+.wbw-word{display:flex;flex-direction:column;align-items:center;padding:8px 10px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);min-width:60px;max-width:120px;text-align:center;transition:background .15s;cursor:default}
+.wbw-word:hover{background:var(--teal-pale);border-color:var(--teal-light)}
+.wbw-arabic{font-family:"Amiri",serif;font-size:1.2rem;color:var(--ink);direction:rtl;line-height:1.4;margin-bottom:4px}
+.wbw-translit{font-size:10px;color:var(--teal-mid);font-style:italic;margin-bottom:3px;line-height:1.3}
+.wbw-meaning{font-size:11px;color:var(--ink-mid);line-height:1.3;font-weight:500}
+.wbw-ayah-divider{width:100%;border:none;border-top:1px dashed var(--border);margin:6px 0}
+.note-wbw{margin-top:8px;overflow-x:auto}
+.note-wbw-table{display:flex;flex-direction:row-reverse;flex-wrap:wrap;gap:3px}
+.note-wbw-word{display:flex;flex-direction:column;align-items:center;padding:5px 7px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);min-width:50px;text-align:center}
+.note-wbw-arabic{font-family:"Amiri",serif;font-size:1rem;direction:rtl;margin-bottom:2px}
+.note-wbw-translit{font-size:9px;color:var(--teal-mid);font-style:italic;margin-bottom:1px}
+.note-wbw-meaning{font-size:10px;color:var(--ink-mid);font-weight:500}
+/* Arabic note fields */
+.arabic-input{font-family:"Amiri",serif;font-size:1.2rem;direction:rtl;text-align:right;line-height:1.8;padding:12px 14px;min-height:90px}
+.arabic-input::placeholder{font-family:"DM Sans",sans-serif;font-size:14px;direction:rtl;text-align:right;color:var(--ink-faint)}
+.lang-tabs{display:flex;gap:0;margin-bottom:6px;border:.5px solid var(--border);border-radius:var(--radius);overflow:hidden;width:fit-content}
+.lang-tab{padding:5px 14px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:var(--surface-2);color:var(--ink-muted);transition:all .2s;font-family:"DM Sans",sans-serif}
+.lang-tab.active{background:var(--teal);color:white}
+.note-arabic-field{display:none}
+.note-arabic-field.visible{display:block}
+.note-english-field{display:block}
+.note-english-field.hidden{display:none}
+
+/* @ reference autocomplete */
+.ref-wrap{position:relative}
+.ref-dropdown{position:absolute;left:0;right:0;background:white;border:1.5px solid var(--teal-light);border-radius:var(--radius);box-shadow:0 4px 16px rgba(0,0,0,0.1);z-index:300;max-height:220px;overflow-y:auto;display:none}
+.ref-dropdown.open{display:block}
+.ref-item{padding:8px 12px;cursor:pointer;font-size:13px;color:var(--ink);border-bottom:1px solid var(--border);display:flex;align-items:baseline;gap:8px}
+.ref-item:last-child{border-bottom:none}
+.ref-item:hover,.ref-item.active{background:var(--teal-pale)}
+.ref-num{font-size:11px;color:var(--teal);font-weight:500;flex-shrink:0}
+.ref-name{color:var(--ink-mid)}
+.ref-hint{font-size:11px;color:var(--ink-faint);margin-top:4px;padding:0 2px}
+/* @ reference chips in rendered notes */
+.ayah-ref-chip{display:inline-block;background:var(--teal-light);color:var(--teal);border:1px solid #9fe1cb;border-radius:99px;font-size:11px;font-weight:500;padding:1px 8px;cursor:pointer;text-decoration:none;margin:0 2px}
+.ayah-ref-chip:hover{background:#9fe1cb}
 </style>
 </head>
 <body>
@@ -158,6 +216,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <button class="tab active" id="tab-btn-add">Add note</button>
       <button class="tab" id="tab-btn-browse">My notes</button>
       <button class="tab" id="tab-btn-overview">Overview</button>
+      <button class="tab" id="tab-btn-video">&#9654; Video</button>
     </div>
   </header>
   <main>
@@ -183,19 +242,49 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <option value="203">Dr. Wahiduddin Khan</option>
         </select>
       </div>
+      <div id="last-note-preview" style="display:none;background:white;border:1.5px solid var(--teal-light);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:1rem"></div>
       <button class="btn-fetch" id="fetch-btn">&#9654; Fetch Arabic text &amp; translation</button>
       <div class="status-msg" id="fetch-msg"></div>
       <div class="ayah-card" id="ayah-preview">
         <div class="ayah-ref-label" id="prev-ref"></div>
         <div class="arabic-text" id="prev-arabic"></div>
         <div class="trans-text" id="prev-trans"></div>
+        <button class="wbw-toggle" id="wbw-toggle" onclick="toggleWbw()" style="display:none">&#9783; Show word by word</button>
+        <div class="wbw-container" id="wbw-container"></div>
       </div>
       <hr class="divider">
       <div class="section-label">Your notes</div>
-      <div class="form-block"><label>Study group notes</label><textarea id="group-notes" placeholder="Key points from the halaqah, teacher's explanation..."></textarea></div>
+      <div class="form-block"><label>Study group notes</label>
+        <div class="lang-tabs">
+          <button class="lang-tab active" onclick="switchNoteLang('en',this)">English</button>
+          <button class="lang-tab" onclick="switchNoteLang('ar',this)">Arabic ع</button>
+          <button class="lang-tab" onclick="switchNoteLang('both',this)">Both</button>
+        </div>
+        <div class="note-english-field ref-wrap" id="group-notes-en-wrap">
+          <textarea id="group-notes" placeholder="Key points from the halaqah, teacher's explanation..."></textarea>
+          <div class="ref-dropdown" id="ref-dropdown"></div>
+        </div>
+        <div class="note-arabic-field" id="group-notes-ar-wrap">
+          <textarea id="group-notes-ar" class="arabic-input" placeholder="أضف ملاحظاتك باللغة العربية..."></textarea>
+        </div>
+        <div class="ref-hint">Tip: type @2:255 to reference an aayah inline</div>
+      </div>
       <div class="form-block"><label>Tafseer reference</label><input type="text" id="tafseer" placeholder="e.g. Ibn Kathir vol.1, Maariful Quran..."></div>
-      <div class="form-block"><label>Personal reflection</label><textarea id="reflection" placeholder="What does this aayah mean to me personally?"></textarea></div>
+      <div class="form-block"><label>Personal reflection</label>
+        <div class="lang-tabs">
+          <button class="lang-tab active" onclick="switchReflectLang('en',this)">English</button>
+          <button class="lang-tab" onclick="switchReflectLang('ar',this)">Arabic ع</button>
+          <button class="lang-tab" onclick="switchReflectLang('both',this)">Both</button>
+        </div>
+        <div class="note-english-field" id="reflection-en-wrap">
+          <textarea id="reflection" placeholder="What does this aayah mean to me personally?"></textarea>
+        </div>
+        <div class="note-arabic-field" id="reflection-ar-wrap">
+          <textarea id="reflection-ar" class="arabic-input" placeholder="ما الذي تعنيه هذه الآية بالنسبة لي؟..."></textarea>
+        </div>
+      </div>
       <div class="form-block"><label>Action point</label><input type="text" id="action" placeholder="e.g. Memorise by next week, apply this daily..."></div>
+      <div class="form-block"><label>YouTube / video link (optional)</label><input type="text" id="youtube-link" placeholder="e.g. https://youtube.com/watch?v=..."></div>
       <hr class="divider">
       <div class="section-label">Attachments</div>
       <div class="attach-zone" id="attach-zone">
@@ -210,7 +299,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div class="section" id="tab-browse">
       <div class="search-wrap" style="margin-top:.25rem">
         <span class="search-icon">&#128269;</span>
-        <input type="text" id="search-input" placeholder="Search notes...">
+        <input type="text" id="search-input" placeholder="Search by surah, aayah, notes...">
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.75rem" id="search-chips">
       </div>
       <div class="filter-row">
         <select id="filter-surah"></select>
@@ -220,6 +311,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <option value="Surah-level">Surah-level</option>
         </select>
       </div>
+      <div id="search-summary" style="font-size:12px;color:var(--ink-muted);margin-bottom:.75rem;min-height:18px"></div>
       <div class="notes-list" id="notes-list"><div class="empty-state"><div class="empty-icon">&#128214;</div><h3>Loading notes...</h3></div></div>
     </div>
     <div class="section" id="tab-overview">
@@ -228,13 +320,67 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="stat-card"><div class="stat-num" id="s-surahs">-</div><div class="stat-label">Surahs</div></div>
         <div class="stat-card"><div class="stat-num" id="s-actions">-</div><div class="stat-label">Actions</div></div>
       </div>
-      <div class="section-label">Surahs studied</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
+        <div class="section-label" style="margin:0">Surahs studied</div>
+        <button id="export-btn" onclick="exportToDocx()" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--teal);color:white;border:none;border-radius:var(--radius);font-family:DM Sans,sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:background .2s" onmouseover="this.style.background='var(--teal-mid)'" onmouseout="this.style.background='var(--teal)'">
+          &#128229; Export to Word / OneNote
+        </button>
+      </div>
+      <div class="status-msg" id="export-msg" style="margin-bottom:.75rem"></div>
       <div id="surah-breakdown"></div>
     </div>
   </main>
+
+<!-- EDIT MODAL -->
+<div id="edit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;overflow-y:auto;padding:1rem">
+  <div style="background:white;border-radius:var(--radius-lg);padding:1.5rem;max-width:600px;margin:2rem auto;position:relative">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem">
+      <div style="font-family:Lora,serif;font-size:1.1rem;font-weight:600;color:var(--teal)">Edit note</div>
+      <button onclick="closeEdit()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--ink-faint);padding:0 4px">&#10005;</button>
+    </div>
+    <div class="form-block"><label>Study group notes</label>
+      <div class="lang-tabs">
+        <button class="lang-tab active" onclick="switchEditNoteLang('en',this)">English</button>
+        <button class="lang-tab" onclick="switchEditNoteLang('ar',this)">Arabic ع</button>
+        <button class="lang-tab" onclick="switchEditNoteLang('both',this)">Both</button>
+      </div>
+      <div class="note-english-field ref-wrap" id="edit-group-notes-en-wrap">
+        <textarea id="edit-group-notes" style="min-height:80px;resize:vertical"></textarea>
+        <div class="ref-dropdown" id="edit-ref-dropdown"></div>
+      </div>
+      <div class="note-arabic-field" id="edit-group-notes-ar-wrap">
+        <textarea id="edit-group-notes-ar" class="arabic-input" style="min-height:80px;resize:vertical" placeholder="أضف ملاحظاتك باللغة العربية..."></textarea>
+      </div>
+      <div class="ref-hint">Tip: type @2:255 to reference an aayah inline</div>
+    </div>
+    <div class="form-block"><label>Tafseer reference</label><input type="text" id="edit-tafseer"></div>
+    <div class="form-block"><label>Personal reflection</label>
+      <div class="lang-tabs">
+        <button class="lang-tab active" onclick="switchEditReflectLang('en',this)">English</button>
+        <button class="lang-tab" onclick="switchEditReflectLang('ar',this)">Arabic ع</button>
+        <button class="lang-tab" onclick="switchEditReflectLang('both',this)">Both</button>
+      </div>
+      <div class="note-english-field" id="edit-reflection-en-wrap">
+        <textarea id="edit-reflection" style="min-height:80px;resize:vertical"></textarea>
+      </div>
+      <div class="note-arabic-field" id="edit-reflection-ar-wrap">
+        <textarea id="edit-reflection-ar" class="arabic-input" style="min-height:80px;resize:vertical" placeholder="ما الذي تعنيه هذه الآية بالنسبة لي؟..."></textarea>
+      </div>
+    </div>
+    <div class="form-block"><label>Action point</label><input type="text" id="edit-action"></div>
+    <div class="form-block"><label>YouTube / video link</label><input type="text" id="edit-youtube-link" placeholder="https://youtube.com/watch?v=..."></div>
+    <div style="display:flex;gap:10px;margin-top:1rem">
+      <button onclick="closeEdit()" style="flex:1;padding:11px;background:var(--surface-2);color:var(--ink-mid);border:1.5px solid var(--border);border-radius:var(--radius);font-family:DM Sans,sans-serif;font-size:14px;cursor:pointer">Cancel</button>
+      <button onclick="saveEdit()" id="edit-save-btn" style="flex:2;padding:11px;background:var(--teal);color:white;border:none;border-radius:var(--radius);font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;cursor:pointer">Save changes</button>
+    </div>
+    <div class="status-msg" id="edit-msg" style="text-align:center;margin-top:8px"></div>
+  </div>
+</div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script>
 (function() {
   var SUPABASE_URL = 'https://sreuyopwlarhaklvunkq.supabase.co';
@@ -250,6 +396,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   var pendingFiles = [];
   var fetchedArabic = '';
   var fetchedTrans = '';
+  var fetchedWords = [];
   var currentUser = null;
 
   // ── BADGE ──
@@ -261,14 +408,16 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
   // ── TABS ──
   function showTab(id) {
-    ['add','browse','overview'].forEach(function(t) {
+    ['add','browse','overview','video'].forEach(function(t) {
       document.getElementById('tab-btn-' + t).classList.toggle('active', t === id);
       document.getElementById('tab-' + t).classList.toggle('active', t === id);
     });
+    if(id==='video') initVideoTab();
   }
   document.getElementById('tab-btn-add').addEventListener('click', function() { showTab('add'); });
   document.getElementById('tab-btn-browse').addEventListener('click', function() { showTab('browse'); });
   document.getElementById('tab-btn-overview').addEventListener('click', function() { showTab('overview'); });
+  document.getElementById('tab-btn-video').addEventListener('click', function() { showTab('video'); });
 
   // ── AUTH ──
   document.getElementById('google-signin-btn').addEventListener('click', function() {
@@ -298,7 +447,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   // ── SURAH AUTO-NAME ──
   document.getElementById('surah-num').addEventListener('input', function() {
     document.getElementById('surah-name').value = SURAHS[parseInt(this.value)] || '';
+    saveLastPosition();
   });
+  document.getElementById('ayah-from').addEventListener('input', saveLastPosition);
+  document.getElementById('ayah-to').addEventListener('input', saveLastPosition);
+  document.getElementById('level').addEventListener('change', saveLastPosition);
+  document.getElementById('trans-id').addEventListener('change', saveLastPosition);
 
   // ── FILE ATTACH ──
   var attachZone = document.getElementById('attach-zone');
@@ -376,38 +530,95 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     var msg = document.getElementById('fetch-msg');
     var btn = document.getElementById('fetch-btn');
     var prev = document.getElementById('ayah-preview');
+    var wbwToggle = document.getElementById('wbw-toggle');
+    var wbwContainer = document.getElementById('wbw-container');
     if (!sn||sn<1||sn>114){msg.className='status-msg err';msg.textContent='Enter a valid surah number (1-114).';return;}
     if (!from||from<1){msg.className='status-msg err';msg.textContent='Enter a valid aayah number.';return;}
     if (to<from){msg.className='status-msg err';msg.textContent='"To" must be >= "From".';return;}
     btn.disabled=true;msg.className='status-msg loading';
     msg.textContent='Fetching ' + (SURAHS[sn]||'Surah '+sn) + ' ' + sn + ':' + from + (to!==from?'-'+to:'') + ' ...';
-    fetchedArabic='';fetchedTrans='';prev.classList.remove('visible');
-    var arabics=[],transs=[],promises=[];
+    fetchedArabic='';fetchedTrans='';fetchedWords=[];
+    prev.classList.remove('visible');
+    wbwToggle.style.display='none';wbwContainer.classList.remove('visible');
+    wbwContainer.innerHTML='';wbwToggle.classList.remove('active');
+    wbwToggle.innerHTML='&#9783; Show word by word';
+    var arabics=[],transs=[],allWords=[],promises=[];
     for (var i=from;i<=to;i++) {
       (function(ayahNum){
+        var url='https://api.quran.com/api/v4/verses/by_key/'+sn+':'+ayahNum
+          +'?translations='+tid+'&fields=text_uthmani&words=true&word_fields=text_uthmani,transliteration';
         promises.push(
-          fetch('https://api.quran.com/api/v4/verses/by_key/'+sn+':'+ayahNum+'?translations='+tid+'&fields=text_uthmani')
-          .then(function(r){return r.json();})
-          .then(function(d){
+          fetch(url).then(function(r){return r.json();}).then(function(d){
             var v=d.verse;
             arabics[ayahNum-from]=v.text_uthmani+'  \u{FD3F}'+ayahNum+'\u{FD3E}';
             if(v.translations&&v.translations[0]) transs[ayahNum-from]='('+ayahNum+') '+v.translations[0].text.replace(/<[^>]+>/g,'');
+            if(v.words&&v.words.length) {
+              allWords[ayahNum-from]={
+                ayahNum:ayahNum,
+                words:v.words.filter(function(w){return w.char_type_name==='word';}).map(function(w){
+                  return {
+                    arabic:w.text_uthmani||w.text||'',
+                    translit:(w.transliteration&&w.transliteration.text)||'',
+                    meaning:(w.translation&&w.translation.text)||''
+                  };
+                })
+              };
+            }
           })
         );
       })(i);
     }
     Promise.all(promises).then(function(){
-      fetchedArabic=arabics.join('\n');fetchedTrans=transs.join('\n');
+      fetchedArabic=arabics.join('\n');fetchedTrans=transs.join('\n');fetchedWords=allWords;
       document.getElementById('prev-ref').textContent=(SURAHS[sn]||'Surah '+sn)+' '+sn+':'+from+(to!==from?'-'+to:'');
       document.getElementById('prev-arabic').textContent=fetchedArabic;
       document.getElementById('prev-trans').textContent=fetchedTrans;
+      if(fetchedWords.length&&fetchedWords.some(function(a){return a&&a.words&&a.words.length;})){
+        wbwToggle.style.display='inline-flex';
+      }
       prev.classList.add('visible');msg.className='status-msg';msg.textContent='';btn.disabled=false;
     }).catch(function(e){
       msg.className='status-msg err';msg.textContent='Could not fetch. ('+e.message+')';btn.disabled=false;
     });
   }
 
-  // ── SAVE NOTE ──
+  window.toggleWbw = function() {
+    var container=document.getElementById('wbw-container');
+    var toggle=document.getElementById('wbw-toggle');
+    if(container.classList.contains('visible')){
+      container.classList.remove('visible');
+      toggle.classList.remove('active');
+      toggle.innerHTML='&#9783; Show word by word';
+    } else {
+      if(!container.innerHTML) renderWbwTable(container,fetchedWords);
+      container.classList.add('visible');
+      toggle.classList.add('active');
+      toggle.innerHTML='&#9783; Hide word by word';
+    }
+  };
+
+  function renderWbwTable(container,wordsData) {
+    var html='<div class="wbw-table">';
+    wordsData.forEach(function(ayahData,ai){
+      if(!ayahData||!ayahData.words) return;
+      if(ai>0) html+='</div><hr class="wbw-ayah-divider"><div class="wbw-table">';
+      ayahData.words.forEach(function(w){
+        html+='<div class="wbw-word">'
+          +'<div class="wbw-arabic">'+escHtml(w.arabic)+'</div>'
+          +'<div class="wbw-translit">'+escHtml(w.translit)+'</div>'
+          +'<div class="wbw-meaning">'+escHtml(w.meaning)+'</div>'
+          +'</div>';
+      });
+    });
+    html+='</div>';
+    container.innerHTML=html;
+  }
+
+  function escHtml(s) {
+    if(!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
   document.getElementById('save-btn').addEventListener('click', function() { saveNote(); });
   async function saveNote() {
     var sn=document.getElementById('surah-num').value.trim();
@@ -451,14 +662,16 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       saveMsg.textContent='Could not save. '+result.error.message;
       saveBtn.disabled=false;return;
     }
-    notes.unshift({id:row.id,date:row.note_date,surahNum:row.surah_num,surahName:row.surah_name,ayah:row.ayah,level:level,arabic:fetchedArabic,translation:fetchedTrans,groupNotes:groupNotes,tafseer:tafseer,reflection:reflection,action:action,attachments:attachments});
+    notes.unshift({id:row.id,date:row.note_date,surahNum:row.surah_num,surahName:row.surah_name,ayah:row.ayah,level:level,arabic:fetchedArabic,translation:fetchedTrans,wordByWord:fetchedWords.length?JSON.stringify(fetchedWords):null,groupNotes:groupNotes,groupNotesAr:document.getElementById('group-notes-ar').value.trim()||'',tafseer:tafseer,reflection:reflection,reflectionAr:document.getElementById('reflection-ar').value.trim()||'',action:action,youtubeLink:row.youtube_link||'',attachments:attachments});
     renderNotes();renderStats();populateFilter();
     badge('ok','Synced');saveMsg.className='status-msg';saveMsg.textContent='';
-    ['surah-num','surah-name','ayah-from','ayah-to','group-notes','tafseer','reflection','action'].forEach(function(id){document.getElementById(id).value='';});
-    document.getElementById('level').value='Aayat-level';
+    ['group-notes','group-notes-ar','tafseer','reflection','reflection-ar','action','youtube-link'].forEach(function(id){document.getElementById(id).value='';});
+    saveLastPosition();
     document.getElementById('ayah-preview').classList.remove('visible');
     document.getElementById('fetch-msg').textContent='';
-    fetchedArabic='';fetchedTrans='';pendingFiles=[];renderPendingFiles();
+    fetchedArabic='';fetchedTrans='';fetchedWords=[];pendingFiles=[];renderPendingFiles();
+    var wt=document.getElementById('wbw-toggle');if(wt){wt.style.display='none';wt.classList.remove('active');}
+    var wc=document.getElementById('wbw-container');if(wc){wc.classList.remove('visible');wc.innerHTML='';}
     saveBtn.disabled=false;showTab('browse');
   }
 
@@ -490,10 +703,69 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         return;
       }
       notes=result.data.map(function(r){
-        return {id:r.id,date:r.note_date,surahNum:r.surah_num,surahName:r.surah_name,ayah:r.ayah,level:r.level,arabic:r.arabic,translation:r.translation,groupNotes:r.group_notes,tafseer:r.tafseer,reflection:r.reflection,action:r.action,attachments:r.attachments||[]};
+        return {id:r.id,date:r.note_date,surahNum:r.surah_num,surahName:r.surah_name,ayah:r.ayah,level:r.level,arabic:r.arabic,translation:r.translation,wordByWord:r.word_by_word||null,groupNotes:r.group_notes,groupNotesAr:r.group_notes_ar||'',tafseer:r.tafseer,reflection:r.reflection,reflectionAr:r.reflection_ar||'',action:r.action,youtubeLink:r.youtube_link||'',attachments:r.attachments||[]};
       });
-      badge('ok','Synced');renderNotes();renderStats();populateFilter();
+      badge('ok','Synced');renderNotes();renderStats();populateFilter();buildSearchChips();
+      restoreLastPosition();
     });
+  }
+
+  // ── REMEMBER LAST POSITION ──
+  function saveLastPosition() {
+    var pos = {
+      surahNum:  document.getElementById('surah-num').value,
+      surahName: document.getElementById('surah-name').value,
+      ayahFrom:  document.getElementById('ayah-from').value,
+      ayahTo:    document.getElementById('ayah-to').value,
+      level:     document.getElementById('level').value,
+      transId:   document.getElementById('trans-id').value
+    };
+    localStorage.setItem('quran-last-pos', JSON.stringify(pos));
+  }
+
+  function restoreLastPosition() {
+    // Try localStorage first
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem('quran-last-pos')); } catch(e) {}
+
+    // Fall back to most recent note
+    if (!saved && notes.length) {
+      var last = notes[0];
+      var ayahParts = last.ayah ? last.ayah.split('-') : [''];
+      saved = {
+        surahNum:  last.surahNum || '',
+        surahName: last.surahName || '',
+        ayahFrom:  ayahParts[0] || '',
+        ayahTo:    ayahParts[1] || '',
+        level:     last.level || 'Aayat-level',
+        transId:   null
+      };
+    }
+
+    if (!saved) return;
+
+    if (saved.surahNum) document.getElementById('surah-num').value = saved.surahNum;
+    if (saved.surahName) document.getElementById('surah-name').value = saved.surahName;
+    if (saved.ayahFrom) document.getElementById('ayah-from').value = saved.ayahFrom;
+    if (saved.ayahTo) document.getElementById('ayah-to').value = saved.ayahTo;
+    if (saved.level) document.getElementById('level').value = saved.level;
+    if (saved.transId) document.getElementById('trans-id').value = saved.transId;
+
+    // Show last note preview in the form
+    if (notes.length) {
+      showLastNotePreview(notes[0]);
+    }
+  }
+
+  function showLastNotePreview(note) {
+    var previewEl = document.getElementById('last-note-preview');
+    if (!previewEl) return;
+    var h = '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);margin-bottom:8px">Last note</div>';
+    if (note.arabic) h += '<div style="font-family:Amiri,serif;font-size:1.1rem;text-align:right;direction:rtl;background:var(--teal-pale);border-radius:var(--radius);padding:8px 12px;line-height:1.8;margin-bottom:6px">' + note.arabic + '</div>';
+    if (note.translation) h += '<div style="font-family:Lora,serif;font-size:.8rem;font-style:italic;color:var(--ink-muted);margin-bottom:8px;line-height:1.5">' + (note.translation.length > 200 ? note.translation.substring(0, 200) + '...' : note.translation) + '</div>';
+    if (note.groupNotes) h += '<div style="font-size:12px;color:var(--ink-mid);margin-bottom:4px"><span style="color:var(--ink-faint);font-size:10px;text-transform:uppercase;letter-spacing:.05em">Notes: </span>' + (note.groupNotes.length > 120 ? note.groupNotes.substring(0,120)+'...' : note.groupNotes) + '</div>';
+    previewEl.innerHTML = h;
+    previewEl.style.display = 'block';
   }
 
   // ── RENDER NOTES ──
@@ -520,9 +792,16 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     var filtered=notes.filter(function(n){
       if(sf&&(n.surahNum+'|'+n.surahName)!==sf)return false;
       if(lf&&n.level!==lf)return false;
-      if(searchVal){var blob=[n.surahName,n.ayah,n.arabic,n.translation,n.groupNotes,n.tafseer,n.reflection,n.action].join(' ').toLowerCase();if(blob.indexOf(searchVal)===-1)return false;}
+      if(searchVal){var blob=[n.surahNum,n.surahName,n.ayah,n.arabic,n.translation,n.groupNotes,n.tafseer,n.reflection,n.action,n.youtubeLink].join(' ').toLowerCase();if(blob.indexOf(searchVal)===-1)return false;}
       return true;
     });
+    // Handle special chip filters
+    if (searchVal === '__action__') {
+      filtered = notes.filter(function(n){ return n.action; });
+    } else if (searchVal === '__video__') {
+      filtered = notes.filter(function(n){ return n.youtubeLink; });
+    }
+    updateSearchUI(filtered.length, notes.length);
     var list=document.getElementById('notes-list');
     if(!filtered.length){
       list.innerHTML=notes.length?'<div class="empty-state"><div class="empty-icon">&#128269;</div><h3>No matches</h3><p>Try a different search or filter.</p></div>':'<div class="empty-state"><div class="empty-icon">&#128214;</div><h3>No notes yet</h3><p>Add your first note from the Add note tab.</p></div>';
@@ -539,12 +818,37 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       h+='</div>';
       if(n.arabic)h+='<div class="note-arabic-mini">'+n.arabic+'</div>';
       if(n.translation)h+='<div class="note-trans-mini">'+(n.translation.length>280?n.translation.substring(0,280)+'...':n.translation)+'</div>';
+      if(n.wordByWord){try{var wbd=JSON.parse(n.wordByWord);
+        if(wbd&&wbd.length){h+='<details style="margin-bottom:8px"><summary style="font-size:11px;color:var(--teal);cursor:pointer;font-weight:500;list-style:none">&#9783; Word by word</summary>';
+        h+='<div class="note-wbw"><div class="note-wbw-table">';
+        wbd.forEach(function(ad){if(!ad||!ad.words)return;
+          ad.words.forEach(function(w){h+='<div class="note-wbw-word">'
+            +'<div class="note-wbw-arabic">'+escHtml(w.arabic)+'</div>'
+            +'<div class="note-wbw-translit">'+escHtml(w.translit)+'</div>'
+            +'<div class="note-wbw-meaning">'+escHtml(w.meaning)+'</div>'
+            +'</div>';});});
+        h+='</div></div></details>';}}catch(e){}}
+
       h+='<div class="note-fields">';
-      if(n.groupNotes)h+='<div class="nf-full"><div class="nf-label">Study group notes</div><div class="nf-val">'+n.groupNotes+'</div></div>';
-      if(n.tafseer)h+='<div><div class="nf-label">Tafseer</div><div class="nf-val">'+n.tafseer+'</div></div>';
-      if(n.reflection)h+='<div><div class="nf-label">Reflection</div><div class="nf-val">'+n.reflection+'</div></div>';
+      if(n.groupNotes)h+='<div class="nf-full"><div class="nf-label">Study group notes</div><div class="nf-val">'+highlight(linkifyRefs(n.groupNotes),searchVal)+'</div></div>';
+      if(n.tafseer)h+='<div><div class="nf-label">Tafseer</div><div class="nf-val">'+highlight(linkifyRefs(n.tafseer),searchVal)+'</div></div>';
+      if(n.reflection)h+='<div><div class="nf-label">Reflection</div><div class="nf-val">'+highlight(linkifyRefs(n.reflection),searchVal)+'</div></div>';
       if(n.action)h+='<div class="nf-full"><div class="nf-label">Action point</div><div class="nf-val"><span class="action-pill">&#10003; '+n.action+'</span></div></div>';
       h+='</div>';
+      if(n.youtubeLink) {
+        var ytId = '';
+        var ytMatch = n.youtubeLink.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/);
+        if(ytMatch) ytId = ytMatch[1];
+        h+='<div style="margin-top:10px">';
+        if(ytId) {
+          h+='<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius);margin-bottom:6px">';
+          h+='<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:var(--radius)" src="https://www.youtube.com/embed/'+ytId+'" allowfullscreen loading="lazy"></iframe>';
+          h+='</div>';
+        } else {
+          h+='<a href="'+n.youtubeLink+'" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--teal);text-decoration:none;background:var(--teal-pale);border:1px solid var(--teal-light);border-radius:var(--radius);padding:6px 10px">&#9654; Watch video</a>';
+        }
+        h+='</div>';
+      }
       if(n.attachments&&n.attachments.length){
         h+='<div class="note-attachments">';
         n.attachments.forEach(function(a){
@@ -559,6 +863,56 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       return h;
     }).join('');
   }
+
+  function updateSearchUI(filtered, total) {
+    var summary = document.getElementById('search-summary');
+    var searchVal = document.getElementById('search-input').value.trim();
+    var sf = document.getElementById('filter-surah').value;
+    var lf = document.getElementById('filter-level').value;
+    var active = searchVal || sf || lf;
+    if (active) {
+      summary.textContent = filtered + ' of ' + total + ' note' + (total!==1?'s':'') + ' match';
+    } else {
+      summary.textContent = total + ' note' + (total!==1?'s':'') + ' total';
+    }
+  }
+
+  function buildSearchChips() {
+    var chips = document.getElementById('search-chips');
+    if (!chips) return;
+    // Build quick-filter chips from unique surahs + common searches
+    var seen = {};
+    var items = [];
+    notes.forEach(function(n) {
+      var k = n.surahNum + '|' + n.surahName;
+      if (!seen[k] && n.surahNum) {
+        seen[k] = true;
+        items.push({ label: n.surahNum + '. ' + n.surahName, value: n.surahName, type: 'surah' });
+      }
+    });
+    // Add action/reflection quick filters
+    var extras = [
+      { label: 'Has action', value: '__action__', type: 'special' },
+      { label: 'Has video', value: '__video__', type: 'special' },
+    ];
+    var currentSearch = document.getElementById('search-input').value;
+    chips.innerHTML = items.slice(0, 8).concat(extras).map(function(c) {
+      var active = currentSearch === c.value;
+      return '<span class="search-chip' + (active?' active':'') + '" data-val="'+encodeURIComponent(c.value)+'" data-type="'+c.type+'" onclick="applyChipEl(this)">'+c.label+'</span>';
+    }).join('');
+  }
+
+  window.applyChipEl = function(el) {
+    var value = decodeURIComponent(el.getAttribute('data-val'));
+    var inp = document.getElementById('search-input');
+    if (inp.value === value) {
+      inp.value = '';
+    } else {
+      inp.value = value;
+    }
+    renderNotes(inp.value);
+    buildSearchChips();
+  };
 
   function renderStats() {
     document.getElementById('s-total').textContent=notes.length;
@@ -575,6 +929,852 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     });
     document.getElementById('surah-breakdown').innerHTML=h||'<div class="empty-state"><div class="empty-icon">&#128211;</div><h3>Nothing yet</h3><p>Studied surahs will appear here.</p></div>';
   }
+
+  // ── EDIT NOTE ──
+  var editingId = null;
+
+  window.editNote = function(id) {
+    var note = notes.find(function(n){ return n.id === id; });
+    if (!note) return;
+    editingId = id;
+    document.getElementById('edit-group-notes').value = note.groupNotes || '';
+    document.getElementById('edit-tafseer').value = note.tafseer || '';
+    document.getElementById('edit-reflection').value = note.reflection || '';
+    document.getElementById('edit-action').value = note.action || '';
+    document.getElementById('edit-youtube-link').value = note.youtubeLink || '';
+    document.getElementById('edit-group-notes-ar').value = note.groupNotesAr || '';
+    document.getElementById('edit-reflection-ar').value = note.reflectionAr || '';
+    document.getElementById('edit-msg').textContent = '';
+    document.getElementById('edit-modal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.closeEdit = function() {
+    document.getElementById('edit-modal').style.display = 'none';
+    document.body.style.overflow = '';
+    editingId = null;
+  };
+
+  window.saveEdit = async function() {
+    if (!editingId) return;
+    var groupNotes = document.getElementById('edit-group-notes').value.trim();
+    var groupNotesAr = document.getElementById('edit-group-notes-ar').value.trim();
+    var tafseer    = document.getElementById('edit-tafseer').value.trim();
+    var reflection = document.getElementById('edit-reflection').value.trim();
+    var reflectionAr = document.getElementById('edit-reflection-ar').value.trim();
+    var action     = document.getElementById('edit-action').value.trim();
+    var youtubeLink= document.getElementById('edit-youtube-link').value.trim();
+    var btn = document.getElementById('edit-save-btn');
+    var msg = document.getElementById('edit-msg');
+    btn.disabled = true;
+    msg.className = 'status-msg loading';
+    msg.textContent = 'Saving...';
+    badge('loading','Saving...');
+    var result = await sb.from('notes').update({
+      group_notes:  groupNotes  || null,
+      group_notes_ar: groupNotesAr || null,
+      tafseer:      tafseer     || null,
+      reflection:   reflection  || null,
+      reflection_ar: reflectionAr || null,
+      action:       action      || null,
+      youtube_link: youtubeLink || null
+    }).eq('id', editingId);
+    if (result.error) {
+      badge('err','Save failed');
+      msg.className = 'status-msg err';
+      msg.textContent = 'Could not save: ' + result.error.message;
+      btn.disabled = false;
+      return;
+    }
+    // Update in memory
+    notes = notes.map(function(n) {
+      if (n.id !== editingId) return n;
+      return Object.assign({}, n, {groupNotes:groupNotes, groupNotesAr:groupNotesAr, tafseer:tafseer, reflection:reflection, reflectionAr:reflectionAr, action:action, youtubeLink:youtubeLink});
+    });
+    renderNotes(); renderStats();
+    badge('ok','Synced');
+    btn.disabled = false;
+    closeEdit();
+  };
+
+  // ── @ REFERENCE AUTOCOMPLETE ──
+  var SURAH_LIST = Object.keys(SURAHS).map(function(k){ return {num:parseInt(k), name:SURAHS[k]}; });
+
+  function setupRefAutocomplete(textareaId, dropdownId) {
+    var ta = document.getElementById(textareaId);
+    var dd = document.getElementById(dropdownId);
+    if (!ta || !dd) return;
+    var activeIdx = -1;
+
+    function getQuery() {
+      var pos = ta.selectionStart;
+      var text = ta.value.substring(0, pos);
+      var match = text.match(/@(\S*)$/);
+      return match ? match[1] : null;
+    }
+
+    function closeDropdown() {
+      dd.classList.remove('open');
+      dd.innerHTML = '';
+      activeIdx = -1;
+    }
+
+    function buildItems(query) {
+      // query could be: "" | "2" | "2:" | "2:2" | "baq" | "fatih"
+      var items = [];
+      var colonIdx = query.indexOf(':');
+
+      if (colonIdx === -1) {
+        // Matching surah by number or name prefix
+        var q = query.toLowerCase();
+        SURAH_LIST.forEach(function(s) {
+          if (!q || String(s.num).startsWith(q) || s.name.toLowerCase().startsWith(q) || s.name.toLowerCase().replace('al-','').startsWith(q)) {
+            items.push({ label: s.num + ':' , surahNum: s.num, surahName: s.name, ayah: '' });
+          }
+        });
+        items = items.slice(0, 8);
+      } else {
+        // Has colon — surah is fixed, showing ayah hint
+        var surahPart = query.substring(0, colonIdx);
+        var ayahPart  = query.substring(colonIdx + 1);
+        var sNum = parseInt(surahPart);
+        var sName = SURAHS[sNum] || '';
+        if (sName) {
+          // Show a few ayah options or the current typed one
+          var base = [1,2,3,4,5,10,20,50,100,200,255];
+          var opts = ayahPart ? [parseInt(ayahPart)] : base;
+          opts.forEach(function(a) {
+            if (!isNaN(a) && a > 0) {
+              items.push({ label: sNum+':'+a, surahNum: sNum, surahName: sName, ayah: String(a) });
+            }
+          });
+          items = items.slice(0, 8);
+        }
+      }
+      return items;
+    }
+
+    function insertRef(item) {
+      var pos = ta.selectionStart;
+      var text = ta.value;
+      var before = text.substring(0, pos);
+      var after  = text.substring(pos);
+      // Replace from the @ symbol
+      var atIdx = before.lastIndexOf('@');
+      var ref = '@' + item.surahNum + ':' + item.ayah;
+      ta.value = before.substring(0, atIdx) + ref + ' ' + after;
+      var newPos = atIdx + ref.length + 1;
+      ta.selectionStart = ta.selectionEnd = newPos;
+      ta.focus();
+      closeDropdown();
+    }
+
+    function renderDropdown(items, query) {
+      if (!items.length) { closeDropdown(); return; }
+      dd.innerHTML = items.map(function(item, i) {
+        var colonIdx = query.indexOf(':');
+        var ayahLabel = item.ayah ? ' — aayah ' + item.ayah : ' (type ayah number)';
+        return '<div class="ref-item' + (i===activeIdx?' active':'') + '" data-idx="'+i+'">' +
+          '<span class="ref-num">@'+item.label+'</span>' +
+          '<span class="ref-name">'+item.surahName+'</span>' +
+          '<span style="font-size:11px;color:var(--ink-faint)">'+ayahLabel+'</span>' +
+          '</div>';
+      }).join('');
+      dd.classList.add('open');
+
+      dd.querySelectorAll('.ref-item').forEach(function(el) {
+        el.addEventListener('mousedown', function(e) {
+          e.preventDefault();
+          var idx = parseInt(el.getAttribute('data-idx'));
+          insertRef(items[idx]);
+        });
+      });
+    }
+
+    ta.addEventListener('input', function() {
+      var q = getQuery();
+      if (q === null) { closeDropdown(); return; }
+      var items = buildItems(q);
+      renderDropdown(items, q);
+    });
+
+    ta.addEventListener('keydown', function(e) {
+      if (!dd.classList.contains('open')) return;
+      var items = dd.querySelectorAll('.ref-item');
+      if (e.key === 'ArrowDown') { e.preventDefault(); activeIdx = Math.min(activeIdx+1, items.length-1); items.forEach(function(el,i){el.classList.toggle('active',i===activeIdx);}); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); activeIdx = Math.max(activeIdx-1, 0); items.forEach(function(el,i){el.classList.toggle('active',i===activeIdx);}); }
+      else if (e.key === 'Enter' && activeIdx >= 0) { e.preventDefault(); items[activeIdx].dispatchEvent(new MouseEvent('mousedown')); }
+      else if (e.key === 'Escape') { closeDropdown(); }
+    });
+
+    ta.addEventListener('blur', function() { setTimeout(closeDropdown, 150); });
+  }
+
+  // Attach to both textareas
+  setupRefAutocomplete('group-notes', 'ref-dropdown');
+  setupRefAutocomplete('edit-group-notes', 'edit-ref-dropdown');
+
+  // ── RENDER @ REFERENCES AS CLICKABLE CHIPS ──
+  function highlight(text, term) {
+    if (!term || term.startsWith('__') || !text) return text;
+    var safe = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return text.replace(new RegExp('(' + safe + ')', 'gi'), '<span class="search-highlight">$1</span>');
+  }
+
+  function linkifyRefs(text) {
+    if (!text) return '';
+    // Escape HTML first
+    var safe = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    // Replace @2:255 style references with chips
+    return safe.replace(/@(\d{1,3}):(\d+)/g, function(match, sNum, ayah) {
+      var name = SURAHS[parseInt(sNum)] || ('Surah '+sNum);
+      return '<a class="ayah-ref-chip" href="#" onclick="jumpToRef('+sNum+','+ayah+');return false;" title="'+name+' '+sNum+':'+ayah+'">@'+sNum+':'+ayah+'</a>';
+    });
+  }
+
+  // Jump to referenced ayah — pre-fills the Add note form
+  window.jumpToRef = function(surahNum, ayah) {
+    document.getElementById('surah-num').value = surahNum;
+    document.getElementById('surah-name').value = SURAHS[surahNum] || '';
+    document.getElementById('ayah-from').value = ayah;
+    document.getElementById('ayah-to').value = '';
+    saveLastPosition();
+    showTab('add');
+    // Auto-fetch
+    document.getElementById('fetch-btn').click();
+  };
+
+  // ── EXPORT TO DOCX ──
+  window.exportToDocx = async function() {
+    var btn = document.getElementById('export-btn');
+    var msg = document.getElementById('export-msg');
+    if (!notes.length) { msg.className='status-msg err'; msg.textContent='No notes to export.'; return; }
+    btn.disabled = true;
+    msg.className = 'status-msg loading';
+    msg.textContent = 'Building document...';
+
+    // Group notes by surah
+    var bySurah = {};
+    var surahOrder = [];
+    notes.forEach(function(n) {
+      var key = (n.surahNum ? String(n.surahNum).padStart(3,'0') : '999') + '|' + (n.surahNum||'0') + '|' + n.surahName;
+      if (!bySurah[key]) { bySurah[key] = []; surahOrder.push(key); }
+      bySurah[key].push(n);
+    });
+    // Sort by surah number
+    surahOrder.sort();
+    // Remove duplicates
+    surahOrder = surahOrder.filter(function(v,i,a){ return a.indexOf(v)===i; });
+
+    // Build XML for a simple Word document
+    var today = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+    var TEAL = '0F6E56';
+    var TEAL_LIGHT = 'E1F5EE';
+    var GRAY = 'F3F3EF';
+    var BORDER = 'C2C2B8';
+
+    function esc(s) {
+      if (!s) return '';
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function para(text, opts) {
+      opts = opts || {};
+      var styleId = opts.style || 'Normal';
+      var bold = opts.bold ? '<w:b/>' : '';
+      var size = opts.size ? '<w:sz w:val="'+opts.size+'"/><w:szCs w:val="'+opts.size+'"/>' : '';
+      var color = opts.color ? '<w:color w:val="'+opts.color+'"/>' : '';
+      var font = '<w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/>';
+      var spacing = opts.spacing ? '<w:spacing w:before="'+opts.spacing+'" w:after="'+(opts.spacingAfter||opts.spacing)+'"/>' : '';
+      var jc = opts.center ? '<w:jc w:val="center"/>' : '';
+      var shade = opts.shade ? '<w:shd w:val="clear" w:color="auto" w:fill="'+opts.shade+'"/>' : '';
+      var pBdr = opts.borderBottom ? '<w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="'+TEAL+'"/></w:pBdr>' : '';
+      var rtl = opts.rtl ? '<w:bidi/>' : '';
+      var szVal = opts.size || '20';
+      return '<w:p><w:pPr>'+spacing+jc+pBdr+shade+rtl+'</w:pPr><w:r><w:rPr>'+font+bold+'<w:sz w:val="'+szVal+'"/><w:szCs w:val="'+szVal+'"/>'+color+'</w:rPr><w:t xml:space="preserve">'+esc(text)+'</w:t></w:r></w:p>';
+    }
+
+    function pageBreak() {
+      return '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
+    }
+
+    function labelValuePara(label, value, shade) {
+      if (!value) return '';
+      var shadeXml = shade ? '<w:shd w:val="clear" w:color="auto" w:fill="'+shade+'"/>' : '';
+      var font = '<w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/>';
+      var lines = String(value).split('\n');
+      var out = '';
+      lines.forEach(function(line, i) {
+        var labelRun = i === 0 ? '<w:r><w:rPr>'+font+'<w:b/><w:sz w:val="18"/><w:szCs w:val="18"/><w:color w:val="'+TEAL+'"/></w:rPr><w:t xml:space="preserve">'+esc(label)+':  </w:t></w:r>' : '';
+        out += '<w:p><w:pPr><w:spacing w:before="40" w:after="40"/>'+shadeXml+'</w:pPr>'+labelRun+'<w:r><w:rPr>'+font+'<w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr><w:t xml:space="preserve">'+esc(line)+'</w:t></w:r></w:p>';
+      });
+      return out;
+    }
+
+    function arabicPara(text) {
+      if (!text) return '';
+      var font = '<w:rFonts w:ascii="Traditional Arabic" w:hAnsi="Traditional Arabic" w:cs="Traditional Arabic"/>';
+      var lines = text.split('\n');
+      var out = '';
+      lines.forEach(function(line) {
+        out += '<w:p><w:pPr><w:jc w:val="right"/><w:bidi/><w:shd w:val="clear" w:color="auto" w:fill="'+TEAL_LIGHT+'"/><w:spacing w:before="60" w:after="60"/></w:pPr><w:r><w:rPr>'+font+'<w:sz w:val="32"/><w:szCs w:val="32"/></w:rPr><w:t xml:space="preserve">'+esc(line)+'</w:t></w:r></w:p>';
+      });
+      return out;
+    }
+
+    function noteBlock(note) {
+      var out = '';
+      // Note header: Aayah ref + date + level
+      var ref = (note.surahNum?note.surahNum+'. ':'')+note.surahName+(note.ayah?' — Aayah '+note.ayah:'');
+      out += para(ref, {bold:true, size:'22', color:TEAL, spacing:'160', spacingAfter:'80'});
+      out += para(note.level + '  |  ' + note.date, {size:'16', color:'888880', spacingAfter:'120'});
+      // Arabic
+      if (note.arabic) {
+        out += arabicPara(note.arabic);
+        out += para('', {size:'16'});
+      }
+      // Translation
+      if (note.translation) {
+        out += labelValuePara('Translation', note.translation);
+        out += para('', {size:'16'});
+      }
+      // Notes fields
+      if (note.groupNotes) out += labelValuePara('Study group notes', note.groupNotes);
+      if (note.tafseer)    out += labelValuePara('Tafseer reference', note.tafseer);
+      if (note.reflection) out += labelValuePara('Personal reflection', note.reflection);
+      if (note.action)     out += labelValuePara('Action point', note.action, 'EAF6F0');
+      if (note.youtubeLink) out += labelValuePara('Video link', note.youtubeLink);
+      // Divider
+      out += para('', {borderBottom:true, spacing:'120', spacingAfter:'120'});
+      return out;
+    }
+
+    // Build document body
+    var body = '';
+
+    // Cover page
+    body += para('', {size:'20', spacing:'720'});
+    body += para('Quran Study Journal', {bold:true, size:'48', color:TEAL, center:true, spacing:'240'});
+    body += para('بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيمِ', {size:'32', color:TEAL, center:true, spacing:'160'});
+    body += para('In the name of Allah, the Most Gracious, the Most Merciful', {size:'18', color:'888880', center:true, spacing:'80'});
+    body += para('', {size:'20', spacing:'240'});
+    body += para('Exported: ' + today, {size:'18', color:'888880', center:true});
+    body += para('Total notes: ' + notes.length + '  |  Surahs covered: ' + surahOrder.length, {size:'18', color:'888880', center:true, spacing:'80'});
+    body += pageBreak();
+
+    // Surah sections
+    surahOrder.forEach(function(key, si) {
+      var parts = key.split('|');
+      var surahNum = parts[1];
+      var surahName = parts[2];
+      var surahNotes = bySurah[key];
+
+      // Surah heading
+      body += para((surahNum?surahNum+'. ':'')+surahName, {bold:true, size:'36', color:TEAL, borderBottom:true, spacing:'240', spacingAfter:'160'});
+      body += para(surahNotes.length+' note'+(surahNotes.length!==1?'s':''), {size:'18', color:'888880', spacingAfter:'200'});
+
+      // Notes sorted by ayah number
+      surahNotes.sort(function(a,b){
+        var an = parseInt(a.ayah)||0, bn = parseInt(b.ayah)||0;
+        return an - bn;
+      });
+      surahNotes.forEach(function(note) {
+        body += noteBlock(note);
+      });
+
+      // Page break between surahs (not after last)
+      if (si < surahOrder.length - 1) body += pageBreak();
+    });
+
+    // Assemble full XML
+    var xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" ' +
+      'xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" ' +
+      'xmlns:o="urn:schemas-microsoft-com:office:office" ' +
+      'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ' +
+      'xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" ' +
+      'xmlns:v="urn:schemas-microsoft-com:vml" ' +
+      'xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" ' +
+      'xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" ' +
+      'xmlns:w10="urn:schemas-microsoft-com:office:word" ' +
+      'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" ' +
+      'xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" ' +
+      'xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" ' +
+      'xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" ' +
+      'xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" ' +
+      'xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" mc:Ignorable="w14 wp14">' +
+      '<w:body>' + body +
+      '<w:sectPr>' +
+      '<w:pgSz w:w="11906" w:h="16838"/>' +
+      '<w:pgMar w:top="1080" w:right="1080" w:bottom="1080" w:left="1080" w:header="720" w:footer="720" w:gutter="0"/>' +
+      '</w:sectPr>' +
+      '</w:body></w:document>';
+
+    // Build the .docx zip using JSZip
+    try {
+      var zip = new JSZip();
+
+      // [Content_Types].xml
+      zip.file('[Content_Types].xml',
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+        '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+        '<Default Extension="xml" ContentType="application/xml"/>' +
+        '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
+        '<Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/>' +
+        '</Types>');
+
+      // _rels/.rels
+      zip.file('_rels/.rels',
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>' +
+        '</Relationships>');
+
+      // word/_rels/document.xml.rels
+      zip.file('word/_rels/document.xml.rels',
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/>' +
+        '</Relationships>');
+
+      // word/settings.xml
+      zip.file('word/settings.xml',
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">' +
+        '<w:defaultTabStop w:val="720"/>' +
+        '</w:settings>');
+
+      // word/document.xml
+      zip.file('word/document.xml', xml);
+
+      // Generate and download
+      var blob = await zip.generateAsync({type:'blob', mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'Quran_Study_Journal_' + new Date().toISOString().slice(0,10) + '.docx';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      msg.className = 'status-msg ok';
+      msg.textContent = 'Downloaded! Open in Word then import into OneNote.';
+      setTimeout(function(){ msg.textContent=''; }, 5000);
+    } catch(e) {
+      msg.className = 'status-msg err';
+      msg.textContent = 'Export failed: ' + e.message;
+      console.error(e);
+    }
+    btn.disabled = false;
+  };
+
+  // Close modal on backdrop click
+
+  // ── EXPORT TO DOCX ──
+  window.exportToDocx = async function() {
+    var btn = document.getElementById('export-btn');
+    var msg = document.getElementById('export-msg');
+    if (!notes.length) { msg.className='status-msg err'; msg.textContent='No notes to export.'; return; }
+    btn.disabled = true;
+    msg.className = 'status-msg loading';
+    msg.textContent = 'Building document...';
+
+    // Group notes by surah
+    var bySurah = {};
+    var surahOrder = [];
+    notes.forEach(function(n) {
+      var key = (n.surahNum ? String(n.surahNum).padStart(3,'0') : '999') + '|' + (n.surahNum||'0') + '|' + n.surahName;
+      if (!bySurah[key]) { bySurah[key] = []; surahOrder.push(key); }
+      bySurah[key].push(n);
+    });
+    // Sort by surah number
+    surahOrder.sort();
+    // Remove duplicates
+    surahOrder = surahOrder.filter(function(v,i,a){ return a.indexOf(v)===i; });
+
+    // Build XML for a simple Word document
+    var today = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+    var TEAL = '0F6E56';
+    var TEAL_LIGHT = 'E1F5EE';
+    var GRAY = 'F3F3EF';
+    var BORDER = 'C2C2B8';
+
+    function esc(s) {
+      if (!s) return '';
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function para(text, opts) {
+      opts = opts || {};
+      var styleId = opts.style || 'Normal';
+      var bold = opts.bold ? '<w:b/>' : '';
+      var size = opts.size ? '<w:sz w:val="'+opts.size+'"/><w:szCs w:val="'+opts.size+'"/>' : '';
+      var color = opts.color ? '<w:color w:val="'+opts.color+'"/>' : '';
+      var font = '<w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/>';
+      var spacing = opts.spacing ? '<w:spacing w:before="'+opts.spacing+'" w:after="'+(opts.spacingAfter||opts.spacing)+'"/>' : '';
+      var jc = opts.center ? '<w:jc w:val="center"/>' : '';
+      var shade = opts.shade ? '<w:shd w:val="clear" w:color="auto" w:fill="'+opts.shade+'"/>' : '';
+      var pBdr = opts.borderBottom ? '<w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="'+TEAL+'"/></w:pBdr>' : '';
+      var rtl = opts.rtl ? '<w:bidi/>' : '';
+      var szVal = opts.size || '20';
+      return '<w:p><w:pPr>'+spacing+jc+pBdr+shade+rtl+'</w:pPr><w:r><w:rPr>'+font+bold+'<w:sz w:val="'+szVal+'"/><w:szCs w:val="'+szVal+'"/>'+color+'</w:rPr><w:t xml:space="preserve">'+esc(text)+'</w:t></w:r></w:p>';
+    }
+
+    function pageBreak() {
+      return '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
+    }
+
+    function labelValuePara(label, value, shade) {
+      if (!value) return '';
+      var shadeXml = shade ? '<w:shd w:val="clear" w:color="auto" w:fill="'+shade+'"/>' : '';
+      var font = '<w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/>';
+      var lines = String(value).split('\n');
+      var out = '';
+      lines.forEach(function(line, i) {
+        var labelRun = i === 0 ? '<w:r><w:rPr>'+font+'<w:b/><w:sz w:val="18"/><w:szCs w:val="18"/><w:color w:val="'+TEAL+'"/></w:rPr><w:t xml:space="preserve">'+esc(label)+':  </w:t></w:r>' : '';
+        out += '<w:p><w:pPr><w:spacing w:before="40" w:after="40"/>'+shadeXml+'</w:pPr>'+labelRun+'<w:r><w:rPr>'+font+'<w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr><w:t xml:space="preserve">'+esc(line)+'</w:t></w:r></w:p>';
+      });
+      return out;
+    }
+
+    function arabicPara(text) {
+      if (!text) return '';
+      var font = '<w:rFonts w:ascii="Traditional Arabic" w:hAnsi="Traditional Arabic" w:cs="Traditional Arabic"/>';
+      var lines = text.split('\n');
+      var out = '';
+      lines.forEach(function(line) {
+        out += '<w:p><w:pPr><w:jc w:val="right"/><w:bidi/><w:shd w:val="clear" w:color="auto" w:fill="'+TEAL_LIGHT+'"/><w:spacing w:before="60" w:after="60"/></w:pPr><w:r><w:rPr>'+font+'<w:sz w:val="32"/><w:szCs w:val="32"/></w:rPr><w:t xml:space="preserve">'+esc(line)+'</w:t></w:r></w:p>';
+      });
+      return out;
+    }
+
+    function noteBlock(note) {
+      var out = '';
+      // Note header: Aayah ref + date + level
+      var ref = (note.surahNum?note.surahNum+'. ':'')+note.surahName+(note.ayah?' — Aayah '+note.ayah:'');
+      out += para(ref, {bold:true, size:'22', color:TEAL, spacing:'160', spacingAfter:'80'});
+      out += para(note.level + '  |  ' + note.date, {size:'16', color:'888880', spacingAfter:'120'});
+      // Arabic
+      if (note.arabic) {
+        out += arabicPara(note.arabic);
+        out += para('', {size:'16'});
+      }
+      // Translation
+      if (note.translation) {
+        out += labelValuePara('Translation', note.translation);
+        out += para('', {size:'16'});
+      }
+      // Notes fields
+      if (note.groupNotes) out += labelValuePara('Study group notes', note.groupNotes);
+      if (note.tafseer)    out += labelValuePara('Tafseer reference', note.tafseer);
+      if (note.reflection) out += labelValuePara('Personal reflection', note.reflection);
+      if (note.action)     out += labelValuePara('Action point', note.action, 'EAF6F0');
+      if (note.youtubeLink) out += labelValuePara('Video link', note.youtubeLink);
+      // Divider
+      out += para('', {borderBottom:true, spacing:'120', spacingAfter:'120'});
+      return out;
+    }
+
+    // Build document body
+    var body = '';
+
+    // Cover page
+    body += para('', {size:'20', spacing:'720'});
+    body += para('Quran Study Journal', {bold:true, size:'48', color:TEAL, center:true, spacing:'240'});
+    body += para('بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيمِ', {size:'32', color:TEAL, center:true, spacing:'160'});
+    body += para('In the name of Allah, the Most Gracious, the Most Merciful', {size:'18', color:'888880', center:true, spacing:'80'});
+    body += para('', {size:'20', spacing:'240'});
+    body += para('Exported: ' + today, {size:'18', color:'888880', center:true});
+    body += para('Total notes: ' + notes.length + '  |  Surahs covered: ' + surahOrder.length, {size:'18', color:'888880', center:true, spacing:'80'});
+    body += pageBreak();
+
+    // Surah sections
+    surahOrder.forEach(function(key, si) {
+      var parts = key.split('|');
+      var surahNum = parts[1];
+      var surahName = parts[2];
+      var surahNotes = bySurah[key];
+
+      // Surah heading
+      body += para((surahNum?surahNum+'. ':'')+surahName, {bold:true, size:'36', color:TEAL, borderBottom:true, spacing:'240', spacingAfter:'160'});
+      body += para(surahNotes.length+' note'+(surahNotes.length!==1?'s':''), {size:'18', color:'888880', spacingAfter:'200'});
+
+      // Notes sorted by ayah number
+      surahNotes.sort(function(a,b){
+        var an = parseInt(a.ayah)||0, bn = parseInt(b.ayah)||0;
+        return an - bn;
+      });
+      surahNotes.forEach(function(note) {
+        body += noteBlock(note);
+      });
+
+      // Page break between surahs (not after last)
+      if (si < surahOrder.length - 1) body += pageBreak();
+    });
+
+    // Assemble full XML
+    var xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" ' +
+      'xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" ' +
+      'xmlns:o="urn:schemas-microsoft-com:office:office" ' +
+      'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ' +
+      'xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" ' +
+      'xmlns:v="urn:schemas-microsoft-com:vml" ' +
+      'xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" ' +
+      'xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" ' +
+      'xmlns:w10="urn:schemas-microsoft-com:office:word" ' +
+      'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" ' +
+      'xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" ' +
+      'xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" ' +
+      'xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" ' +
+      'xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" ' +
+      'xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" mc:Ignorable="w14 wp14">' +
+      '<w:body>' + body +
+      '<w:sectPr>' +
+      '<w:pgSz w:w="11906" w:h="16838"/>' +
+      '<w:pgMar w:top="1080" w:right="1080" w:bottom="1080" w:left="1080" w:header="720" w:footer="720" w:gutter="0"/>' +
+      '</w:sectPr>' +
+      '</w:body></w:document>';
+
+    // Build the .docx zip using JSZip
+    try {
+      var zip = new JSZip();
+
+      // [Content_Types].xml
+      zip.file('[Content_Types].xml',
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+        '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+        '<Default Extension="xml" ContentType="application/xml"/>' +
+        '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
+        '<Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/>' +
+        '</Types>');
+
+      // _rels/.rels
+      zip.file('_rels/.rels',
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>' +
+        '</Relationships>');
+
+      // word/_rels/document.xml.rels
+      zip.file('word/_rels/document.xml.rels',
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/>' +
+        '</Relationships>');
+
+      // word/settings.xml
+      zip.file('word/settings.xml',
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">' +
+        '<w:defaultTabStop w:val="720"/>' +
+        '</w:settings>');
+
+      // word/document.xml
+      zip.file('word/document.xml', xml);
+
+      // Generate and download
+      var blob = await zip.generateAsync({type:'blob', mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'Quran_Study_Journal_' + new Date().toISOString().slice(0,10) + '.docx';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      msg.className = 'status-msg ok';
+      msg.textContent = 'Downloaded! Open in Word then import into OneNote.';
+      setTimeout(function(){ msg.textContent=''; }, 5000);
+    } catch(e) {
+      msg.className = 'status-msg err';
+      msg.textContent = 'Export failed: ' + e.message;
+      console.error(e);
+    }
+    btn.disabled = false;
+  };
+
+  // Close modal on backdrop click
+
+  document.getElementById('edit-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeEdit();
+  });
+
+
+  // ── VIDEO STUDY TAB ──
+  var ytPlayer = null;
+  var tsComments = [];
+  var currentVideoId = '';
+  var currentVideoUrl = '';
+
+  function extractYtId(url) {
+    var m = url.match(/(?:v=|youtu\.be\/|embed\/)([\\w-]{11})/);
+    return m ? m[1] : null;
+  }
+
+  function formatTime(secs) {
+    secs = Math.floor(secs);
+    var h = Math.floor(secs/3600);
+    var m = Math.floor((secs%3600)/60);
+    var s = secs%60;
+    if(h>0) return h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+    return m+':'+(s<10?'0':'')+s;
+  }
+
+  function parseTime(str) {
+    var parts = str.split(':').map(Number);
+    if(parts.length===3) return parts[0]*3600+parts[1]*60+parts[2];
+    if(parts.length===2) return parts[0]*60+parts[1];
+    return parseInt(str)||0;
+  }
+
+  function initVideoTab() {
+    renderRecentLinks();
+  }
+
+  function renderRecentLinks() {
+    // Pull YouTube links from existing notes
+    var links = [];
+    var seen = {};
+    notes.forEach(function(n) {
+      if(n.youtubeLink && !seen[n.youtubeLink]) {
+        seen[n.youtubeLink] = true;
+        var id = extractYtId(n.youtubeLink);
+        if(id) links.push({url:n.youtubeLink, id:id, surah:(n.surahNum?n.surahNum+'. ':'')+n.surahName});
+      }
+    });
+    var el = document.getElementById('video-recent-links');
+    if(!links.length) { el.innerHTML=''; return; }
+    el.innerHTML='<div style="font-size:11px;color:var(--ink-muted);margin-bottom:6px;font-weight:500;text-transform:uppercase;letter-spacing:.05em">From your notes</div>'
+      +'<div style="display:flex;flex-wrap:wrap;gap:6px">'
+      +links.slice(0,6).map(function(l){
+        return '<button onclick="loadVideoUrl(\''+l.url+'\')" style="font-size:12px;padding:4px 10px;background:var(--surface-2);border:1px solid var(--border);border-radius:99px;cursor:pointer;color:var(--ink-mid);font-family:DM Sans,sans-serif">&#9654; '+l.surah+'</button>';
+      }).join('')+'</div>';
+  }
+
+  window.loadVideoUrl = function(url) {
+    document.getElementById('video-url-input').value = url;
+    loadVideo();
+  };
+
+  window.loadVideo = function() {
+    var url = document.getElementById('video-url-input').value.trim();
+    var id = extractYtId(url);
+    if(!id) { alert('Please enter a valid YouTube URL.'); return; }
+    currentVideoId = id;
+    currentVideoUrl = url;
+    tsComments = [];
+    renderTsComments();
+    var iframe = document.getElementById('yt-iframe');
+    iframe.src = 'https://www.youtube.com/embed/'+id+'?enablejsapi=1&rel=0&modestbranding=1';
+    document.getElementById('video-title').textContent = url.length > 60 ? url.substring(0,60)+'...' : url;
+    document.getElementById('video-setup').style.marginBottom = '.75rem';
+    document.getElementById('video-player-wrap').style.display = 'block';
+    // Load YouTube IFrame API
+    if(!window.YT) {
+      var tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+      window.onYouTubeIframeAPIReady = function() {
+        ytPlayer = new YT.Player('yt-iframe', {events:{'onReady':function(){}}});
+      };
+    } else if(window.YT && window.YT.Player) {
+      ytPlayer = new YT.Player('yt-iframe', {events:{'onReady':function(){}}});
+    }
+  };
+
+  window.closeVideo = function() {
+    document.getElementById('video-player-wrap').style.display = 'none';
+    document.getElementById('yt-iframe').src = '';
+    ytPlayer = null;
+    currentVideoId = '';
+    tsComments = [];
+    renderTsComments();
+    document.getElementById('video-url-input').value = '';
+  };
+
+  window.grabTimestamp = function() {
+    var comment = document.getElementById('ts-comment-input').value.trim();
+    var lang = document.getElementById('ts-lang').value;
+    var secs = 0;
+    // Try to get current time from YouTube player
+    try {
+      if(ytPlayer && ytPlayer.getCurrentTime) secs = ytPlayer.getCurrentTime();
+    } catch(e) {}
+    var ts = {
+      time: secs,
+      label: formatTime(secs),
+      comment: comment,
+      lang: lang,
+      id: Date.now()
+    };
+    tsComments.push(ts);
+    tsComments.sort(function(a,b){return a.time-b.time;});
+    document.getElementById('ts-comment-input').value = '';
+    renderTsComments();
+  };
+
+  window.deleteTs = function(id) {
+    tsComments = tsComments.filter(function(t){return t.id!==id;});
+    renderTsComments();
+  };
+
+  window.seekTo = function(secs) {
+    try {
+      if(ytPlayer && ytPlayer.seekTo) { ytPlayer.seekTo(secs, true); ytPlayer.playVideo(); }
+      else {
+        // Fallback: update iframe src with start time
+        var iframe = document.getElementById('yt-iframe');
+        var base = 'https://www.youtube.com/embed/'+currentVideoId+'?enablejsapi=1&rel=0&modestbranding=1&start='+Math.floor(secs)+'&autoplay=1';
+        iframe.src = base;
+      }
+    } catch(e) {}
+  };
+
+  function renderTsComments() {
+    var list = document.getElementById('ts-comments-list');
+    var empty = document.getElementById('ts-empty');
+    if(!tsComments.length) {
+      list.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+    list.innerHTML = tsComments.map(function(ts) {
+      var isAr = ts.lang === 'ar';
+      return '<div class="ts-item">'
+        +'<button class="ts-stamp" onclick="seekTo('+ts.time+')" title="Jump to this moment">'+ts.label+'</button>'
+        +(ts.comment ? '<div class="ts-text'+(isAr?' arabic':'')+'">'+escHtml(ts.comment)+'</div>' : '<div class="ts-text" style="color:var(--ink-faint);font-style:italic">No comment</div>')
+        +'<button class="ts-delete" onclick="deleteTs('+ts.id+')">&#10005;</button>'
+        +'</div>';
+    }).join('');
+  }
+
+  window.clearTsComments = function() {
+    if(tsComments.length && !confirm('Clear all timestamp comments?')) return;
+    tsComments = [];
+    renderTsComments();
+  };
+
+  window.saveVideoNote = function() {
+    if(!tsComments.length) { alert('No timestamp comments to save yet.'); return; }
+    if(!currentVideoUrl) { alert('No video loaded.'); return; }
+    // Build a structured note from timestamp comments
+    var enLines = tsComments.filter(function(t){return t.lang!=='ar'&&t.comment;}).map(function(t){return '['+t.label+'] '+t.comment;});
+    var arLines = tsComments.filter(function(t){return t.lang==='ar'&&t.comment;}).map(function(t){return '['+t.label+'] '+t.comment;});
+    var allLines = tsComments.map(function(t){return '['+t.label+'] '+(t.comment||'(no comment)');});
+    // Pre-fill the Add note form with this data
+    document.getElementById('group-notes').value = enLines.length ? enLines.join('\n') : allLines.join('\n');
+    if(arLines.length) document.getElementById('group-notes-ar').value = arLines.join('\n');
+    document.getElementById('youtube-link').value = currentVideoUrl;
+    showTab('add');
+    // Scroll to save button
+    setTimeout(function(){ document.getElementById('save-btn').scrollIntoView({behavior:'smooth'}); }, 200);
+  };
 
 })();
 </script>
