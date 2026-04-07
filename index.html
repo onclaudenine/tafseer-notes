@@ -157,6 +157,19 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .root-tip-arabic{font-family:"Amiri",serif;font-size:1.1rem;direction:rtl;color:white;line-height:1.4}
 .root-tip-loading{font-size:10px;color:rgba(255,255,255,0.5);font-style:italic}
 
+/* morphology panel */
+.morph-panel{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:white;border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:12px 14px;z-index:300;min-width:200px;max-width:280px;box-shadow:0 8px 24px rgba(0,0,0,0.12);display:none;text-align:right;direction:rtl}
+.morph-panel.visible{display:block}
+.morph-panel::before{content:'';position:absolute;bottom:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-bottom-color:var(--border)}
+.morph-panel::after{content:'';position:absolute;bottom:calc(100% - 1px);left:50%;transform:translateX(-50%);border:6px solid transparent;border-bottom-color:white}
+.morph-word-ar{font-family:"Amiri",serif;font-size:1.4rem;color:var(--ink);margin-bottom:6px;text-align:center;direction:rtl}
+.morph-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:3px 0;border-bottom:1px solid var(--surface-2);font-size:12px}
+.morph-row:last-child{border-bottom:none}
+.morph-label{color:var(--ink-muted);font-size:11px;white-space:nowrap;direction:ltr;text-align:left}
+.morph-val{color:var(--ink);font-family:"Amiri",serif;font-size:13px;direction:rtl}
+.morph-seg-divider{height:1px;background:var(--teal-light);margin:6px 0}
+.morph-close{position:absolute;top:6px;left:8px;background:none;border:none;cursor:pointer;color:var(--ink-faint);font-size:16px;padding:0;direction:ltr}
+
 /* word-by-word */
 .wbw-toggle{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 12px;background:var(--gold-light);color:var(--gold);border:1px solid #e8d0a8;border-radius:99px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
 .wbw-toggle:hover{background:#faeeda}
@@ -1968,8 +1981,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       ayahData.words.forEach(function(w, wi) {
         var wordPos = wi + 1;
         var tipId = 'root-' + (surahNum||0) + '-' + ayahNum + '-' + wordPos;
-        html += '<div class="wbw-word" id="'+tipId+'">'
+        var morphPanelId = 'morp-' + (surahNum||0) + '-' + ayahNum + '-' + wordPos;
+        html += '<div class="wbw-word" id="'+tipId+'" data-sn="'+surahNum+'" data-an="'+ayahNum+'" data-wp="'+wordPos+'" data-ar="'+encodeURIComponent(w.arabic)+'" onclick="wbwClick(this)">'
           + '<div class="root-tip"><span class="root-tip-label">Root</span><span class="root-tip-arabic root-tip-loading" id="'+tipId+'-root">...</span></div>'
+          + '<div class="morph-panel" id="'+morphPanelId+'"><button class="morph-close" onclick="event.stopPropagation();closeMorphPanel()">&#10005;</button></div>'
           + '<div class="wbw-arabic">'+escHtml(w.arabic)+'</div>'
           + '<div class="wbw-translit">'+escHtml(w.translit)+'</div>'
           + '<div class="wbw-meaning">'+escHtml(w.meaning)+'</div>'
@@ -2003,6 +2018,145 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       });
     }
   }
+
+
+  // ── MORPHOLOGY FEATURE ──
+  var morphData = null;
+  var morphLoading = false;
+  var morphCallbacks = [];
+  var activeMorphPanel = null;
+
+  function loadMorphData(callback) {
+    if (morphData !== null) { callback(); return; }
+    if (morphLoading) { morphCallbacks.push(callback); return; }
+    morphLoading = true;
+    morphCallbacks.push(callback);
+    // Load morph.json from the same GitHub Pages domain
+    var base = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/');
+    var url = base + 'morph.json';
+    fetch(url).then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function(data) {
+      morphData = data;
+      morphLoading = false;
+      morphCallbacks.forEach(function(cb) { cb(); });
+      morphCallbacks = [];
+    }).catch(function(e) {
+      console.warn('[Morph] Failed to load:', e.message);
+      morphData = {};
+      morphLoading = false;
+      morphCallbacks.forEach(function(cb) { cb(); });
+      morphCallbacks = [];
+    });
+  }
+
+  function parseMorphSeg(segStr) {
+    var result = {};
+    segStr.split('|').forEach(function(part) {
+      var idx = part.indexOf(':');
+      if (idx === -1) return;
+      var k = part.slice(0, idx);
+      var v = part.slice(idx + 1);
+      result[k] = v;
+    });
+    return result;
+  }
+
+  function morphRowHtml(label, value) {
+    if (!value) return '';
+    return '<div class="morph-row"><span class="morph-label">'+label+'</span><span class="morph-val">'+escHtml(value)+'</span></div>';
+  }
+
+  function buildMorphHtml(wordAr, surah, ayah, wordPos) {
+    if (!morphData) return '<div style="font-size:12px;color:var(--ink-muted);padding:4px">جاري التحميل...</div>';
+    var key = surah + ':' + ayah + ':' + wordPos;
+    var entry = morphData[key];
+    if (!entry) return '<div style="font-size:12px;color:var(--ink-muted);padding:4px">لا تحليل متاح</div>';
+    
+    var segs = Array.isArray(entry) ? entry : [entry];
+    var html = '<div class="morph-word-ar">' + escHtml(wordAr) + '</div>';
+    
+    segs.forEach(function(segStr, i) {
+      if (!segStr) return;
+      if (i > 0) html += '<div class="morph-seg-divider"></div>';
+      var seg = parseMorphSeg(segStr);
+      
+      // Position (prefix/suffix)
+      if (seg.pos) html += morphRowHtml('الموضع', seg.pos);
+      // Type
+      if (seg.t) html += morphRowHtml('النوع', seg.t);
+      // Particle type
+      if (seg.pt) html += morphRowHtml('الحرف', seg.pt);
+      // Root
+      if (seg.r) html += morphRowHtml('الجذر', seg.r);
+      // Lemma
+      if (seg.l) html += morphRowHtml('الصيغة', seg.l);
+      // Verb form
+      if (seg.vf) html += morphRowHtml('باب الفعل', seg.vf);
+      // Tense
+      if (seg.tn) html += morphRowHtml('الزمن', seg.tn);
+      // Mood/case/irāb
+      if (seg.m) html += morphRowHtml('الإعراب', seg.m);
+      if (seg.c) html += morphRowHtml('الإعراب', seg.c);
+      // Gender & number
+      if (seg.g) html += morphRowHtml('الجنس', seg.g);
+      if (seg.n) html += morphRowHtml('العدد', seg.n);
+      if (seg.gn) html += morphRowHtml('الجنس والعدد', seg.gn);
+      // Person
+      if (seg.p) html += morphRowHtml('الشخص', seg.p);
+      // Noun form (مصدر, اسم فاعل, etc)
+      if (seg.f) html += morphRowHtml('الوزن', seg.f);
+      // Definiteness
+      if (seg.d) html += morphRowHtml('التعريف', seg.d);
+      // Attr
+      if (seg.a) html += morphRowHtml('الوصف', seg.a);
+    });
+    
+    return html;
+  }
+
+  function closeMorphPanel() {
+    if (activeMorphPanel) {
+      activeMorphPanel.classList.remove('visible');
+      activeMorphPanel = null;
+    }
+  }
+
+  window.wbwClick = function(el) {
+    var sn = el.getAttribute('data-sn');
+    var an = el.getAttribute('data-an');
+    var wp = el.getAttribute('data-wp');
+    var ar = decodeURIComponent(el.getAttribute('data-ar') || '');
+    showMorphPanel(el, ar, sn, an, wp);
+  };
+
+  window.showMorphPanel = function(btn, wordAr, surah, ayah, wordPos) {
+    // Close any open panel first
+    closeMorphPanel();
+    
+    var panelId = 'morp-' + surah + '-' + ayah + '-' + wordPos;
+    var panel = document.getElementById(panelId);
+    if (!panel) return;
+    
+    loadMorphData(function() {
+      panel.innerHTML = buildMorphHtml(wordAr, surah, ayah, wordPos);
+      panel.classList.add('visible');
+      activeMorphPanel = panel;
+    });
+    
+    // Show loading state immediately
+    panel.innerHTML = '<div style="font-size:12px;color:var(--ink-muted);padding:4px;text-align:center">جاري التحميل...</div>';
+    panel.classList.add('visible');
+    activeMorphPanel = panel;
+  };
+
+  // Close morph panel on outside click
+  document.addEventListener('click', function(e) {
+    if (activeMorphPanel && !activeMorphPanel.contains(e.target) && !e.target.closest('.wbw-word')) {
+      closeMorphPanel();
+    }
+  });
 
 })();
 </script>
