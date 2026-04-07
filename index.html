@@ -131,6 +131,23 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .search-chip.active{background:var(--teal-light);color:var(--teal);border-color:#9fe1cb}
 .search-highlight{background:#fff3a3;border-radius:2px;padding:0 1px}
 
+/* rich text editor */
+.rich-editor-wrap{border:1.5px solid var(--border);border-radius:var(--radius);background:white;transition:border-color .2s;overflow:hidden}
+.rich-editor-wrap:focus-within{border-color:var(--teal-mid);box-shadow:0 0 0 3px rgba(29,158,117,.12)}
+.rich-toolbar{display:flex;gap:2px;padding:6px 8px;border-bottom:1px solid var(--border);background:var(--surface-2);flex-wrap:wrap}
+.rich-toolbar button{background:none;border:none;border-radius:4px;padding:4px 7px;cursor:pointer;font-size:13px;color:var(--ink-mid);font-family:DM Sans,sans-serif;font-weight:500;line-height:1;transition:all .15s}
+.rich-toolbar button:hover{background:var(--border);color:var(--ink)}
+.rich-toolbar button.active{background:var(--teal-light);color:var(--teal)}
+.rich-toolbar .sep{width:1px;background:var(--border);margin:2px 4px;align-self:stretch}
+.rich-content{min-height:90px;padding:10px 12px;outline:none;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--ink);line-height:1.7;resize:none}
+.rich-content.arabic{font-family:"Amiri",serif;font-size:1.2rem;direction:rtl;text-align:right;line-height:1.8}
+.rich-content ul,.rich-content ol{padding-left:1.5rem;margin:.25rem 0}
+.rich-content:empty:before{content:attr(data-placeholder);color:var(--ink-faint);pointer-events:none}
+.rich-content li{margin:.2rem 0}
+.rich-content b,.rich-content strong{font-weight:600}
+.rich-content i,.rich-content em{font-style:italic}
+.rich-content u{text-decoration:underline}
+
 /* word-by-word */
 .wbw-toggle{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 12px;background:var(--gold-light);color:var(--gold);border:1px solid #e8d0a8;border-radius:99px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
 .wbw-toggle:hover{background:#faeeda}
@@ -260,16 +277,17 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <button class="lang-tab" onclick="switchNoteLang('ar',this)">Arabic ع</button>
           <button class="lang-tab" onclick="switchNoteLang('both',this)">Both</button>
         </div>
-        <div class="note-english-field ref-wrap" id="group-notes-en-wrap">
-          <textarea id="group-notes" placeholder="Key points from the halaqah, teacher's explanation..."></textarea>
-          <div class="ref-dropdown" id="ref-dropdown"></div>
+        <div class="note-english-field" id="group-notes-en-wrap">
+          <div class="ref-wrap">
+<div class="rich-editor-wrap"><div class="rich-toolbar"><button onmousedown="event.preventDefault();document.execCommand('bold')" title="Bold"><b>B</b></button><button onmousedown="event.preventDefault();document.execCommand('italic')" title="Italic"><i>I</i></button><button onmousedown="event.preventDefault();document.execCommand('underline')" title="Underline"><u>U</u></button><div class="sep"></div><button onmousedown="event.preventDefault();document.execCommand('insertUnorderedList')" title="Bullet list">&#8226; List</button><button onmousedown="event.preventDefault();document.execCommand('insertOrderedList')" title="Numbered list">1. List</button><div class="sep"></div><button onmousedown="event.preventDefault();document.execCommand('removeFormat')" title="Clear formatting">Clear</button></div><div class="rich-content" id="group-notes" contenteditable="true" style="min-height:90px;" data-placeholder="Key points from the halaqah, teacher's explanation..."></div></div>
+            <div class="ref-dropdown" id="ref-dropdown"></div>
+          </div>
         </div>
         <div class="note-arabic-field" id="group-notes-ar-wrap">
-          <textarea id="group-notes-ar" class="arabic-input" placeholder="أضف ملاحظاتك باللغة العربية..."></textarea>
+<div class="rich-editor-wrap"><div class="rich-content arabic" id="group-notes-ar" contenteditable="true" style="min-height:90px;direction:rtl;text-align:right;" data-placeholder="أضف ملاحظاتك باللغة العربية..."></div></div>
         </div>
         <div class="ref-hint">Tip: type @2:255 to reference an aayah inline</div>
       </div>
-      <div class="form-block"><label>Tafseer reference</label><input type="text" id="tafseer" placeholder="e.g. Ibn Kathir vol.1, Maariful Quran..."></div>
       <div class="form-block"><label>Personal reflection</label>
         <div class="lang-tabs">
           <button class="lang-tab active" onclick="switchReflectLang('en',this)">English</button>
@@ -277,10 +295,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <button class="lang-tab" onclick="switchReflectLang('both',this)">Both</button>
         </div>
         <div class="note-english-field" id="reflection-en-wrap">
-          <textarea id="reflection" placeholder="What does this aayah mean to me personally?"></textarea>
+<div class="rich-editor-wrap"><div class="rich-toolbar"><button onmousedown="event.preventDefault();document.execCommand('bold')" title="Bold"><b>B</b></button><button onmousedown="event.preventDefault();document.execCommand('italic')" title="Italic"><i>I</i></button><button onmousedown="event.preventDefault();document.execCommand('underline')" title="Underline"><u>U</u></button><div class="sep"></div><button onmousedown="event.preventDefault();document.execCommand('insertUnorderedList')" title="Bullet list">&#8226; List</button><button onmousedown="event.preventDefault();document.execCommand('insertOrderedList')" title="Numbered list">1. List</button><div class="sep"></div><button onmousedown="event.preventDefault();document.execCommand('removeFormat')" title="Clear formatting">Clear</button></div><div class="rich-content" id="reflection" contenteditable="true" style="min-height:90px;" data-placeholder="What does this aayah mean to me personally?"></div></div>
         </div>
         <div class="note-arabic-field" id="reflection-ar-wrap">
-          <textarea id="reflection-ar" class="arabic-input" placeholder="ما الذي تعنيه هذه الآية بالنسبة لي؟..."></textarea>
+<div class="rich-editor-wrap"><div class="rich-content arabic" id="reflection-ar" contenteditable="true" style="min-height:90px;direction:rtl;text-align:right;" data-placeholder="ما الذي تعنيه هذه الآية بالنسبة لي؟..."></div></div>
         </div>
       </div>
       <div class="form-block"><label>Action point</label><input type="text" id="action" placeholder="e.g. Memorise by next week, apply this daily..."></div>
@@ -310,6 +328,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <option value="Aayat-level">Aayat-level</option>
           <option value="Surah-level">Surah-level</option>
         </select>
+        <select id="sort-by">
+          <option value="date-desc">Newest first</option>
+          <option value="date-asc">Oldest first</option>
+          <option value="surah-asc">Surah (1&#8594;114)</option>
+          <option value="surah-desc">Surah (114&#8594;1)</option>
+          <option value="edited-desc">Recently edited</option>
+        </select>
       </div>
       <div id="search-summary" style="font-size:12px;color:var(--ink-muted);margin-bottom:.75rem;min-height:18px"></div>
       <div class="notes-list" id="notes-list"><div class="empty-state"><div class="empty-icon">&#128214;</div><h3>Loading notes...</h3></div></div>
@@ -329,6 +354,48 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div class="status-msg" id="export-msg" style="margin-bottom:.75rem"></div>
       <div id="surah-breakdown"></div>
     </div>
+
+    <!-- VIDEO STUDY TAB -->
+    <div class="section" id="tab-video">
+      <div id="video-setup" style="margin-top:.25rem">
+        <div class="form-block">
+          <label>YouTube URL</label>
+          <div style="display:flex;gap:8px">
+            <input type="text" id="video-url-input" placeholder="https://youtube.com/watch?v=...">
+            <button onclick="loadVideo()" style="padding:10px 16px;background:var(--teal);color:white;border:none;border-radius:var(--radius);font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap">Load</button>
+          </div>
+        </div>
+        <div id="video-recent-links" style="margin-top:.5rem"></div>
+      </div>
+
+      <div id="video-player-wrap" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
+          <div id="video-title" style="font-family:Lora,serif;font-size:.95rem;font-weight:600;color:var(--ink);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:.5rem"></div>
+          <button onclick="closeVideo()" style="background:none;border:1px solid var(--border);border-radius:var(--radius);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--ink-muted);flex-shrink:0">&#10005; Close</button>
+        </div>
+        <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius-lg);margin-bottom:1rem">
+          <iframe id="yt-iframe" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:var(--radius-lg)" allowfullscreen allow="autoplay"></iframe>
+        </div>
+        <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem">
+          <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);margin-bottom:.75rem">Timestamp notes</div>
+          <div style="display:flex;gap:8px;margin-bottom:.75rem">
+            <button onclick="grabTimestamp()" style="padding:8px 14px;background:var(--teal-light);color:var(--teal);border:1px solid #9fe1cb;border-radius:var(--radius);font-family:DM Sans,sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0">&#9201; Stamp</button>
+            <input type="text" id="ts-comment-input" placeholder="Type your comment then tap Stamp, or stamp first...">
+          </div>
+          <div style="display:flex;gap:6px;margin-bottom:.75rem;flex-wrap:wrap">
+            <select id="ts-lang" style="width:auto;flex-shrink:0;font-size:13px;padding:8px 10px">
+              <option value="en">English</option>
+              <option value="ar">Arabic</option>
+            </select>
+            <button onclick="saveVideoNote()" style="padding:8px 16px;background:var(--teal);color:white;border:none;border-radius:var(--radius);font-family:DM Sans,sans-serif;font-size:13px;font-weight:500;cursor:pointer">Save as note</button>
+            <button onclick="clearTsComments()" style="padding:8px 12px;background:none;border:1px solid var(--border);border-radius:var(--radius);font-family:DM Sans,sans-serif;font-size:13px;cursor:pointer;color:var(--ink-muted)">Clear all</button>
+          </div>
+          <div id="ts-comments-list" style="display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto"></div>
+          <div id="ts-empty" style="text-align:center;padding:2rem;color:var(--ink-faint);font-size:13px">Tap &#9201; Stamp while the video plays to capture a timestamp</div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
 <!-- EDIT MODAL -->
@@ -344,16 +411,17 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <button class="lang-tab" onclick="switchEditNoteLang('ar',this)">Arabic ع</button>
         <button class="lang-tab" onclick="switchEditNoteLang('both',this)">Both</button>
       </div>
-      <div class="note-english-field ref-wrap" id="edit-group-notes-en-wrap">
-        <textarea id="edit-group-notes" style="min-height:80px;resize:vertical"></textarea>
-        <div class="ref-dropdown" id="edit-ref-dropdown"></div>
+      <div class="note-english-field" id="edit-group-notes-en-wrap">
+        <div class="ref-wrap">
+<div class="rich-editor-wrap"><div class="rich-toolbar"><button onmousedown="event.preventDefault();document.execCommand('bold')" title="Bold"><b>B</b></button><button onmousedown="event.preventDefault();document.execCommand('italic')" title="Italic"><i>I</i></button><button onmousedown="event.preventDefault();document.execCommand('underline')" title="Underline"><u>U</u></button><div class="sep"></div><button onmousedown="event.preventDefault();document.execCommand('insertUnorderedList')" title="Bullet list">&#8226; List</button><button onmousedown="event.preventDefault();document.execCommand('insertOrderedList')" title="Numbered list">1. List</button><div class="sep"></div><button onmousedown="event.preventDefault();document.execCommand('removeFormat')" title="Clear formatting">Clear</button></div><div class="rich-content" id="edit-group-notes" contenteditable="true" style="min-height:80px;" data-placeholder="Study group notes..."></div></div>
+          <div class="ref-dropdown" id="edit-ref-dropdown"></div>
+        </div>
       </div>
       <div class="note-arabic-field" id="edit-group-notes-ar-wrap">
-        <textarea id="edit-group-notes-ar" class="arabic-input" style="min-height:80px;resize:vertical" placeholder="أضف ملاحظاتك باللغة العربية..."></textarea>
+<div class="rich-editor-wrap"><div class="rich-content arabic" id="edit-group-notes-ar" contenteditable="true" style="min-height:80px;direction:rtl;text-align:right;" data-placeholder="أضف ملاحظاتك باللغة العربية..."></div></div>
       </div>
       <div class="ref-hint">Tip: type @2:255 to reference an aayah inline</div>
     </div>
-    <div class="form-block"><label>Tafseer reference</label><input type="text" id="edit-tafseer"></div>
     <div class="form-block"><label>Personal reflection</label>
       <div class="lang-tabs">
         <button class="lang-tab active" onclick="switchEditReflectLang('en',this)">English</button>
@@ -361,14 +429,24 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <button class="lang-tab" onclick="switchEditReflectLang('both',this)">Both</button>
       </div>
       <div class="note-english-field" id="edit-reflection-en-wrap">
-        <textarea id="edit-reflection" style="min-height:80px;resize:vertical"></textarea>
+<div class="rich-editor-wrap"><div class="rich-toolbar"><button onmousedown="event.preventDefault();document.execCommand('bold')" title="Bold"><b>B</b></button><button onmousedown="event.preventDefault();document.execCommand('italic')" title="Italic"><i>I</i></button><button onmousedown="event.preventDefault();document.execCommand('underline')" title="Underline"><u>U</u></button><div class="sep"></div><button onmousedown="event.preventDefault();document.execCommand('insertUnorderedList')" title="Bullet list">&#8226; List</button><button onmousedown="event.preventDefault();document.execCommand('insertOrderedList')" title="Numbered list">1. List</button><div class="sep"></div><button onmousedown="event.preventDefault();document.execCommand('removeFormat')" title="Clear formatting">Clear</button></div><div class="rich-content" id="edit-reflection" contenteditable="true" style="min-height:80px;" data-placeholder="Personal reflection..."></div></div>
       </div>
       <div class="note-arabic-field" id="edit-reflection-ar-wrap">
-        <textarea id="edit-reflection-ar" class="arabic-input" style="min-height:80px;resize:vertical" placeholder="ما الذي تعنيه هذه الآية بالنسبة لي؟..."></textarea>
+<div class="rich-editor-wrap"><div class="rich-content arabic" id="edit-reflection-ar" contenteditable="true" style="min-height:80px;direction:rtl;text-align:right;" data-placeholder="ما الذي تعنيه هذه الآية بالنسبة لي؟..."></div></div>
       </div>
     </div>
     <div class="form-block"><label>Action point</label><input type="text" id="edit-action"></div>
     <div class="form-block"><label>YouTube / video link</label><input type="text" id="edit-youtube-link" placeholder="https://youtube.com/watch?v=..."></div>
+    <div class="form-block" id="edit-attachments-section" style="display:none">
+      <label>Attachments</label>
+      <div id="edit-attachments-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:.5rem"></div>
+      <div style="border:2px dashed var(--border);border-radius:var(--radius);padding:1rem;text-align:center;cursor:pointer;background:white;transition:all .2s" id="edit-attach-zone">
+        <div style="font-size:13px;color:var(--ink-muted)">&#128206; Drop files or tap to add more</div>
+        <div style="font-size:11px;color:var(--ink-faint);margin-top:3px">PDF or images &middot; max 10MB each</div>
+      </div>
+      <input type="file" id="edit-file-input" accept=".pdf,image/jpeg,image/png,image/jpg" multiple style="display:none">
+      <div id="edit-pending-list" style="display:flex;flex-direction:column;gap:6px;margin-top:6px"></div>
+    </div>
     <div style="display:flex;gap:10px;margin-top:1rem">
       <button onclick="closeEdit()" style="flex:1;padding:11px;background:var(--surface-2);color:var(--ink-mid);border:1.5px solid var(--border);border-radius:var(--radius);font-family:DM Sans,sans-serif;font-size:14px;cursor:pointer">Cancel</button>
       <button onclick="saveEdit()" id="edit-save-btn" style="flex:2;padding:11px;background:var(--teal);color:white;border:none;border-radius:var(--radius);font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;cursor:pointer">Save changes</button>
@@ -627,7 +705,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     var to=document.getElementById('ayah-to').value.trim();
     var level=document.getElementById('level').value;
     var groupNotes=document.getElementById('group-notes').value.trim();
-    var tafseer=document.getElementById('tafseer').value.trim();
     var reflection=document.getElementById('reflection').value.trim();
     var action=document.getElementById('action').value.trim();
     var saveMsg=document.getElementById('save-msg');
@@ -662,10 +739,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       saveMsg.textContent='Could not save. '+result.error.message;
       saveBtn.disabled=false;return;
     }
-    notes.unshift({id:row.id,date:row.note_date,surahNum:row.surah_num,surahName:row.surah_name,ayah:row.ayah,level:level,arabic:fetchedArabic,translation:fetchedTrans,wordByWord:fetchedWords.length?JSON.stringify(fetchedWords):null,groupNotes:groupNotes,groupNotesAr:document.getElementById('group-notes-ar').value.trim()||'',tafseer:tafseer,reflection:reflection,reflectionAr:document.getElementById('reflection-ar').value.trim()||'',action:action,youtubeLink:row.youtube_link||'',attachments:attachments});
+    notes.unshift({id:row.id,date:row.note_date,editedAt:'',surahNum:row.surah_num,surahName:row.surah_name,ayah:row.ayah,level:level,arabic:fetchedArabic,translation:fetchedTrans,wordByWord:fetchedWords.length?JSON.stringify(fetchedWords):null,groupNotes:groupNotes,groupNotesAr:document.getElementById('group-notes-ar').innerHTML.trim()||'',reflection:reflection,reflectionAr:document.getElementById('reflection-ar').innerHTML.trim()||'',action:action,youtubeLink:row.youtube_link||'',attachments:attachments});
     renderNotes();renderStats();populateFilter();
     badge('ok','Synced');saveMsg.className='status-msg';saveMsg.textContent='';
-    ['group-notes','group-notes-ar','tafseer','reflection','reflection-ar','action','youtube-link'].forEach(function(id){document.getElementById(id).value='';});
+    ['group-notes','group-notes-ar','reflection','reflection-ar'].forEach(function(id){document.getElementById(id).innerHTML='';});
+    ['action','youtube-link'].forEach(function(id){document.getElementById(id).value='';}); 
     saveLastPosition();
     document.getElementById('ayah-preview').classList.remove('visible');
     document.getElementById('fetch-msg').textContent='';
@@ -703,7 +781,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         return;
       }
       notes=result.data.map(function(r){
-        return {id:r.id,date:r.note_date,surahNum:r.surah_num,surahName:r.surah_name,ayah:r.ayah,level:r.level,arabic:r.arabic,translation:r.translation,wordByWord:r.word_by_word||null,groupNotes:r.group_notes,groupNotesAr:r.group_notes_ar||'',tafseer:r.tafseer,reflection:r.reflection,reflectionAr:r.reflection_ar||'',action:r.action,youtubeLink:r.youtube_link||'',attachments:r.attachments||[]};
+        return {id:r.id,date:r.note_date,editedAt:r.edited_at||'',surahNum:r.surah_num,surahName:r.surah_name,ayah:r.ayah,level:r.level,arabic:r.arabic,translation:r.translation,wordByWord:r.word_by_word||null,groupNotes:r.group_notes,groupNotesAr:r.group_notes_ar||'',reflection:r.reflection,reflectionAr:r.reflection_ar||'',action:r.action,youtubeLink:r.youtube_link||'',attachments:r.attachments||[]};
       });
       badge('ok','Synced');renderNotes();renderStats();populateFilter();buildSearchChips();
       restoreLastPosition();
@@ -784,6 +862,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   document.getElementById('search-input').addEventListener('input', function(){renderNotes(this.value);});
   document.getElementById('filter-surah').addEventListener('change', function(){renderNotes();});
   document.getElementById('filter-level').addEventListener('change', function(){renderNotes();});
+  document.getElementById('sort-by').addEventListener('change', function(){renderNotes();});
 
   function renderNotes(search) {
     var searchVal=(search!==undefined?search:document.getElementById('search-input').value).toLowerCase();
@@ -801,6 +880,43 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     } else if (searchVal === '__video__') {
       filtered = notes.filter(function(n){ return n.youtubeLink; });
     }
+    // ── SORT ──
+    var sortBy = document.getElementById('sort-by') ? document.getElementById('sort-by').value : 'date-desc';
+
+    function parseNoteDate(n) {
+      // Parse "06 Apr 2026" format → timestamp for sorting
+      var d = new Date(n.date);
+      return isNaN(d) ? 0 : d.getTime();
+    }
+    function parseEditDate(n) {
+      if (!n.editedAt) return 0;
+      var d = new Date(n.editedAt);
+      return isNaN(d) ? 0 : d.getTime();
+    }
+
+    filtered.sort(function(a, b) {
+      switch(sortBy) {
+        case 'date-asc':
+          return parseNoteDate(a) - parseNoteDate(b);
+        case 'date-desc':
+          return parseNoteDate(b) - parseNoteDate(a);
+        case 'surah-asc':
+          var sna = parseInt(a.surahNum)||999, snb = parseInt(b.surahNum)||999;
+          if (sna !== snb) return sna - snb;
+          return (parseInt(a.ayah)||0) - (parseInt(b.ayah)||0);
+        case 'surah-desc':
+          var sna2 = parseInt(a.surahNum)||0, snb2 = parseInt(b.surahNum)||0;
+          if (sna2 !== snb2) return snb2 - sna2;
+          return (parseInt(b.ayah)||0) - (parseInt(a.ayah)||0);
+        case 'edited-desc':
+          var ea = parseEditDate(a)||parseNoteDate(a);
+          var eb = parseEditDate(b)||parseNoteDate(b);
+          return eb - ea;
+        default:
+          return parseNoteDate(b) - parseNoteDate(a);
+      }
+    });
+
     updateSearchUI(filtered.length, notes.length);
     var list=document.getElementById('notes-list');
     if(!filtered.length){
@@ -817,7 +933,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       h+='<button onclick="editNote('+n.id+')" style="background:none;border:1px solid var(--border);border-radius:var(--radius);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--ink-mid);font-family:DM Sans,sans-serif">Edit</button>';
       h+='<button class="del-btn" onclick="deleteNote('+n.id+')" title="Delete">&#10005;</button>';
       h+='</div></div>';
-      h+='<div class="note-meta"><span class="chip teal">'+n.level+'</span><span class="chip">'+n.date+'</span>';
+      h+='<div class="note-meta">';
+      h+='<span class="chip teal">'+n.level+'</span>';
+      h+='<span class="chip" style="display:inline-flex;align-items:center;gap:4px">&#128197; '+n.date+'</span>';
+      if(n.editedAt)h+='<span class="chip" style="display:inline-flex;align-items:center;gap:4px;font-style:italic">&#9998; edited '+n.editedAt+'</span>';
       if(n.attachments&&n.attachments.length)h+='<span class="chip">&#128206; '+n.attachments.length+' file'+(n.attachments.length>1?'s':'')+'</span>';
       h+='</div>';
       if(n.arabic)h+='<div class="note-arabic-mini">'+n.arabic+'</div>';
@@ -936,19 +1055,25 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
   // ── EDIT NOTE ──
   var editingId = null;
+  var editPendingFiles = [];
+  var editRemovedPaths = [];
 
   window.editNote = function(id) {
     var note = notes.find(function(n){ return n.id === id; });
     if (!note) return;
     editingId = id;
-    document.getElementById('edit-group-notes').value = note.groupNotes || '';
+    document.getElementById('edit-group-notes').innerHTML = note.groupNotes || '';
     document.getElementById('edit-tafseer').value = note.tafseer || '';
-    document.getElementById('edit-reflection').value = note.reflection || '';
+    document.getElementById('edit-reflection').innerHTML = note.reflection || '';
     document.getElementById('edit-action').value = note.action || '';
     document.getElementById('edit-youtube-link').value = note.youtubeLink || '';
-    document.getElementById('edit-group-notes-ar').value = note.groupNotesAr || '';
-    document.getElementById('edit-reflection-ar').value = note.reflectionAr || '';
+    document.getElementById('edit-group-notes-ar').innerHTML = note.groupNotesAr || '';
+    document.getElementById('edit-reflection-ar').innerHTML = note.reflectionAr || '';
     document.getElementById('edit-msg').textContent = '';
+    editPendingFiles = [];
+    editRemovedPaths = [];
+    renderEditAttachments(note.attachments || []);
+    renderEditPending();
     document.getElementById('edit-modal').style.display = 'block';
     document.body.style.overflow = 'hidden';
   };
@@ -961,11 +1086,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
   window.saveEdit = async function() {
     if (!editingId) return;
-    var groupNotes = document.getElementById('edit-group-notes').value.trim();
-    var groupNotesAr = document.getElementById('edit-group-notes-ar').value.trim();
-    var tafseer    = document.getElementById('edit-tafseer').value.trim();
-    var reflection = document.getElementById('edit-reflection').value.trim();
-    var reflectionAr = document.getElementById('edit-reflection-ar').value.trim();
+    var groupNotes = document.getElementById('edit-group-notes').innerHTML.trim();
+    var groupNotesAr = document.getElementById('edit-group-notes-ar').innerHTML.trim();
+    var reflection = document.getElementById('edit-reflection').innerHTML.trim();
+    var reflectionAr = document.getElementById('edit-reflection-ar').innerHTML.trim();
     var action     = document.getElementById('edit-action').value.trim();
     var youtubeLink= document.getElementById('edit-youtube-link').value.trim();
     var btn = document.getElementById('edit-save-btn');
@@ -974,14 +1098,35 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     msg.className = 'status-msg loading';
     msg.textContent = 'Saving...';
     badge('loading','Saving...');
+    // Handle attachment uploads and removals
+    var note = notes.find(function(n){ return n.id === editingId; });
+    var currentAttachments = (note && note.attachments) ? note.attachments.slice() : [];
+    // Remove deleted attachments from storage
+    for (var ri = 0; ri < editRemovedPaths.length; ri++) {
+      await sb.storage.from(BUCKET).remove([editRemovedPaths[ri]]);
+      currentAttachments = currentAttachments.filter(function(a){ return a.path !== editRemovedPaths[ri]; });
+    }
+    // Upload new pending files
+    if (editPendingFiles.length) {
+      msg.textContent = 'Uploading attachments...';
+      for (var pi = 0; pi < editPendingFiles.length; pi++) {
+        var f = editPendingFiles[pi];
+        var path = currentUser.id + '/' + editingId + '/' + Date.now() + '_' + f.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+        var up = await sb.storage.from(BUCKET).upload(path, f, { contentType: f.type });
+        if (!up.error) currentAttachments.push({ name: f.name, path: path, type: f.type, size: f.size });
+      }
+    }
+    msg.textContent = 'Saving...';
+    var now = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
     var result = await sb.from('notes').update({
+      edited_at:    now,
       group_notes:  groupNotes  || null,
       group_notes_ar: groupNotesAr || null,
-      tafseer:      tafseer     || null,
       reflection:   reflection  || null,
       reflection_ar: reflectionAr || null,
       action:       action      || null,
-      youtube_link: youtubeLink || null
+      youtube_link: youtubeLink || null,
+      attachments:  currentAttachments
     }).eq('id', editingId);
     if (result.error) {
       badge('err','Save failed');
@@ -993,12 +1138,50 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     // Update in memory
     notes = notes.map(function(n) {
       if (n.id !== editingId) return n;
-      return Object.assign({}, n, {groupNotes:groupNotes, groupNotesAr:groupNotesAr, tafseer:tafseer, reflection:reflection, reflectionAr:reflectionAr, action:action, youtubeLink:youtubeLink});
+      return Object.assign({}, n, {groupNotes:groupNotes, groupNotesAr:groupNotesAr, reflection:reflection, reflectionAr:reflectionAr, action:action, youtubeLink:youtubeLink, attachments:currentAttachments, editedAt:now});
     });
     renderNotes(); renderStats();
     badge('ok','Synced');
     btn.disabled = false;
     closeEdit();
+  };
+
+  // ── LANGUAGE SWITCHER ──
+  function switchLang(enId, arId, mode) {
+    var enEl = document.getElementById(enId);
+    var arEl = document.getElementById(arId);
+    if (!enEl || !arEl) return;
+    if (mode === 'en') {
+      enEl.style.display = 'block';
+      arEl.style.display = 'none';
+    } else if (mode === 'ar') {
+      enEl.style.display = 'none';
+      arEl.style.display = 'block';
+    } else {
+      enEl.style.display = 'block';
+      arEl.style.display = 'block';
+    }
+  }
+  function updateTabs(btn) {
+    var tabs = btn.parentElement.querySelectorAll('.lang-tab');
+    tabs.forEach(function(t) { t.classList.remove('active'); });
+    btn.classList.add('active');
+  }
+  window.switchNoteLang = function(mode, btn) {
+    updateTabs(btn);
+    switchLang('group-notes-en-wrap', 'group-notes-ar-wrap', mode);
+  };
+  window.switchReflectLang = function(mode, btn) {
+    updateTabs(btn);
+    switchLang('reflection-en-wrap', 'reflection-ar-wrap', mode);
+  };
+  window.switchEditNoteLang = function(mode, btn) {
+    updateTabs(btn);
+    switchLang('edit-group-notes-en-wrap', 'edit-group-notes-ar-wrap', mode);
+  };
+  window.switchEditReflectLang = function(mode, btn) {
+    updateTabs(btn);
+    switchLang('edit-reflection-en-wrap', 'edit-reflection-ar-wrap', mode);
   };
 
   // ── @ REFERENCE AUTOCOMPLETE ──
@@ -1059,17 +1242,28 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     }
 
     function insertRef(item) {
-      var pos = ta.selectionStart;
-      var text = ta.value;
-      var before = text.substring(0, pos);
-      var after  = text.substring(pos);
-      // Replace from the @ symbol
-      var atIdx = before.lastIndexOf('@');
-      var ref = '@' + item.surahNum + ':' + item.ayah;
-      ta.value = before.substring(0, atIdx) + ref + ' ' + after;
-      var newPos = atIdx + ref.length + 1;
-      ta.selectionStart = ta.selectionEnd = newPos;
       ta.focus();
+      var ref = '@' + item.surahNum + ':' + item.ayah + ' ';
+      // Find and replace the @query text
+      var sel = window.getSelection();
+      if (sel && sel.rangeCount) {
+        var range = sel.getRangeAt(0);
+        range.collapse(true);
+        // Select back to the @ sign
+        var node = range.startContainer;
+        var offset = range.startOffset;
+        var text = node.textContent || '';
+        var atIdx = text.lastIndexOf('@', offset-1);
+        if (atIdx !== -1) {
+          range.setStart(node, atIdx);
+          range.setEnd(node, offset);
+          range.deleteContents();
+          range.insertNode(document.createTextNode(ref));
+          range.collapse(false);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
       closeDropdown();
     }
 
@@ -1226,12 +1420,25 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       return out;
     }
 
+    function stripHtml(html) {
+      if (!html) return '';
+      return html
+        .replace(/<li>/gi, '\n- ').replace(/<\/li>/gi, '')
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<p>/gi, '').replace(/<\/p>/gi, '\n')
+        .replace(/<[^>]+>/g, '')
+        .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
+        .replace(/\n{3,}/g, '\n\n').trim();
+    }
+
     function noteBlock(note) {
       var out = '';
       // Note header: Aayah ref + date + level
       var ref = (note.surahNum?note.surahNum+'. ':'')+note.surahName+(note.ayah?' — Aayah '+note.ayah:'');
       out += para(ref, {bold:true, size:'22', color:TEAL, spacing:'160', spacingAfter:'80'});
-      out += para(note.level + '  |  ' + note.date, {size:'16', color:'888880', spacingAfter:'120'});
+      var dateStr = 'Created: ' + note.date + (note.editedAt ? '   |   Edited: ' + note.editedAt : '');
+      out += para(note.level + '  |  ' + dateStr, {size:'16', color:'888880', spacingAfter:'120'});
       // Arabic
       if (note.arabic) {
         out += arabicPara(note.arabic);
@@ -1243,9 +1450,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         out += para('', {size:'16'});
       }
       // Notes fields
-      if (note.groupNotes) out += labelValuePara('Study group notes', note.groupNotes);
-      if (note.tafseer)    out += labelValuePara('Tafseer reference', note.tafseer);
-      if (note.reflection) out += labelValuePara('Personal reflection', note.reflection);
+      if (stripHtml(note.groupNotes)) out += labelValuePara('Study group notes', stripHtml(note.groupNotes));
+      if (stripHtml(note.reflection)) out += labelValuePara('Personal reflection', stripHtml(note.reflection));
       if (note.action)     out += labelValuePara('Action point', note.action, 'EAF6F0');
       if (note.youtubeLink) out += labelValuePara('Video link', note.youtubeLink);
       // Divider
@@ -1459,7 +1665,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       // Note header: Aayah ref + date + level
       var ref = (note.surahNum?note.surahNum+'. ':'')+note.surahName+(note.ayah?' — Aayah '+note.ayah:'');
       out += para(ref, {bold:true, size:'22', color:TEAL, spacing:'160', spacingAfter:'80'});
-      out += para(note.level + '  |  ' + note.date, {size:'16', color:'888880', spacingAfter:'120'});
+      var dateStr = 'Created: ' + note.date + (note.editedAt ? '   |   Edited: ' + note.editedAt : '');
+      out += para(note.level + '  |  ' + dateStr, {size:'16', color:'888880', spacingAfter:'120'});
       // Arabic
       if (note.arabic) {
         out += arabicPara(note.arabic);
@@ -1471,9 +1678,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         out += para('', {size:'16'});
       }
       // Notes fields
-      if (note.groupNotes) out += labelValuePara('Study group notes', note.groupNotes);
-      if (note.tafseer)    out += labelValuePara('Tafseer reference', note.tafseer);
-      if (note.reflection) out += labelValuePara('Personal reflection', note.reflection);
+      if (stripHtml(note.groupNotes)) out += labelValuePara('Study group notes', stripHtml(note.groupNotes));
+      if (stripHtml(note.reflection)) out += labelValuePara('Personal reflection', stripHtml(note.reflection));
       if (note.action)     out += labelValuePara('Action point', note.action, 'EAF6F0');
       if (note.youtubeLink) out += labelValuePara('Video link', note.youtubeLink);
       // Divider
