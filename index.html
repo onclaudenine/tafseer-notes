@@ -1809,8 +1809,24 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   var currentVideoUrl = '';
 
   function extractYtId(url) {
-    var m = url.match(/(?:v=|youtu\.be\/|embed\/)([\\w-]{11})/);
-    return m ? m[1] : null;
+    if (!url) return null;
+    url = url.trim();
+    // Match all common YouTube URL formats (including unlisted, shorts, mobile)
+    var patterns = [
+      /[?&]v=([A-Za-z0-9_-]{11})/,
+      /youtu\.be\/([A-Za-z0-9_-]{11})/,
+      /youtube\.com\/embed\/([A-Za-z0-9_-]{11})/,
+      /youtube\.com\/shorts\/([A-Za-z0-9_-]{11})/,
+      /youtube\.com\/v\/([A-Za-z0-9_-]{11})/,
+      /youtube\.com\/live\/([A-Za-z0-9_-]{11})/
+    ];
+    for (var i = 0; i < patterns.length; i++) {
+      var m = url.match(patterns[i]);
+      if (m) return m[1];
+    }
+    // Last resort: any 11-char alphanumeric+dash+underscore sequence after / or =
+    var last = url.match(/[\/=]([A-Za-z0-9_-]{11})(?:[&?]|$)/);
+    return last ? last[1] : null;
   }
 
   function formatTime(secs) {
