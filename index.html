@@ -166,7 +166,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .root-tip{display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:white;border-radius:var(--radius);padding:6px 10px;white-space:nowrap;z-index:200;flex-direction:column;align-items:center;gap:2px;min-width:60px;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
 .root-tip::after{content:'';position:absolute;bottom:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-bottom-color:var(--ink)}
 .root-tip-label{font-size:9px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.05em}
-.root-tip-arabic{font-family:"Amiri",serif;font-size:1.1rem;direction:rtl;color:white;line-height:1.4}
+.root-tip-arabic{font-family:"Amiri",serif;font-size:1.3rem;direction:rtl;color:white;line-height:1.4;letter-spacing:2px}
 .root-tip-loading{font-size:10px;color:rgba(255,255,255,0.5);font-style:italic}
 
 /* morphology panel */
@@ -174,16 +174,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .morph-panel.visible{display:block}
 .morph-panel::before{content:'';position:absolute;bottom:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-bottom-color:var(--border)}
 .morph-panel::after{content:'';position:absolute;bottom:calc(100% - 1px);left:50%;transform:translateX(-50%);border:6px solid transparent;border-bottom-color:white}
-.morph-word-ar{font-family:"Amiri",serif;font-size:1.4rem;color:var(--ink);margin-bottom:6px;text-align:center;direction:rtl}
-.morph-lang-tabs{display:flex;gap:0;margin-bottom:8px;border:.5px solid var(--border);border-radius:var(--radius);overflow:hidden;width:fit-content}
-.morph-lang-tab{padding:3px 10px;font-size:11px;font-weight:500;cursor:pointer;border:none;background:var(--surface-2);color:var(--ink-muted);font-family:DM Sans,sans-serif}
-.morph-lang-tab.active{background:var(--teal);color:white}
+.morph-word-ar{font-family:"Amiri",serif;font-size:1.8rem;color:var(--ink);margin-bottom:8px;text-align:center;direction:rtl}
 .morph-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:4px 0;border-bottom:1px solid var(--surface-2);font-size:12px}
 .morph-row:last-child{border-bottom:none}
 .morph-label-en{color:var(--ink-muted);font-size:11px;white-space:nowrap;direction:ltr;text-align:left;flex-shrink:0}
 .morph-label-ar{color:var(--ink-muted);font-size:11px;white-space:nowrap;direction:rtl;text-align:right;flex-shrink:0;font-family:"Amiri",serif;font-size:12px}
 .morph-val-en{color:var(--ink);font-size:12px;direction:ltr;text-align:right}
-.morph-val-ar{color:var(--ink);font-family:"Amiri",serif;font-size:13px;direction:rtl;text-align:right}
+.morph-val-ar{color:var(--ink);font-family:"Amiri",serif;font-size:15px;direction:rtl;text-align:right}
 .morph-seg-divider{height:1px;background:var(--teal-light);margin:6px 0}
 .morph-close{position:absolute;top:6px;right:8px;background:none;border:none;cursor:pointer;color:var(--ink-faint);font-size:16px;padding:0}
 
@@ -2332,7 +2329,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     f:'Form', d:'Definiteness', a:'Attribute'
   };
 
-  var morphLang = 'both'; // 'en', 'ar', 'both'
+  var morphLang = 'en'; // 'en', 'ar', 'both'
 
   function morphEnVal(key, val) {
     // Try specific lookup first
@@ -2389,19 +2386,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     }
   }
 
-  window.setMorphLang = function(lang, btn) {
-    morphLang = lang;
-    // Update tab buttons
-    var tabs = btn.parentElement.querySelectorAll('.morph-lang-tab');
-    tabs.forEach(function(t) { t.classList.remove('active'); });
-    btn.classList.add('active');
-    // Re-render current panel
-    if (activeMorphPanel) {
-      var nid = activeMorphPanel._morphData;
-      if (nid) buildMorphHtml(nid.wordAr, nid.surah, nid.ayah, nid.wordPos, activeMorphPanel);
-    }
-  };
-
   function buildMorphHtml(wordAr, surah, ayah, wordPos, panel) {
     if (!morphData) return '<div style="font-size:12px;color:var(--ink-muted);padding:4px">Loading...</div>';
     var key = surah + ':' + ayah + ':' + wordPos;
@@ -2413,12 +2397,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     var html = '<button class="morph-close" onclick="event.stopPropagation();closeMorphPanel()">&#10005;</button>';
     html += '<div class="morph-word-ar">' + escHtml(wordAr) + '</div>';
 
-    // Language tabs
-    html += '<div class="morph-lang-tabs">'
-      + '<button class="morph-lang-tab' + (morphLang==="en"?' active':'') + '" data-ml="en" onclick="setMorphLang(this.dataset.ml,this)">EN</button>'
-      + '<button class="morph-lang-tab' + (morphLang==="both"?' active':'') + '" data-ml="both" onclick="setMorphLang(this.dataset.ml,this)">EN+AR</button>'
-      + '<button class="morph-lang-tab' + (morphLang==="ar"?' active':'') + '" data-ml="ar" onclick="setMorphLang(this.dataset.ml,this)">AR</button>'
-      + '</div>';
 
     segs.forEach(function(segStr, i) {
       if (!segStr) return;
@@ -2831,6 +2809,39 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     }
 
     function hl(text) {
+      if (!search || !text) return escHtml(text || '');
+      var escaped = escHtml(text);
+      var escapedSearch = escHtml(search);
+      var re = new RegExp('(' + escapedSearch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      return escaped.replace(re, '<mark class="vocab-highlight">$1</mark>');
+    }
+
+    body.innerHTML = filtered.map(function(w) {
+      return '<tr>'
+        + '<td class="vocab-ar" contenteditable="true" onblur="editVocabField('+w.id+',\'arabic\',this.textContent)">'+hl(w.arabic)+'</td>'
+        + '<td class="vocab-ex" contenteditable="true" onblur="editVocabField('+w.id+',\'example\',this.textContent)">'+hl(w.example)+'</td>'
+        + '<td class="vocab-en" contenteditable="true" onblur="editVocabField('+w.id+',\'meaning\',this.textContent)">'+hl(w.meaning)+'</td>'
+        + '<td class="vocab-del"><button onclick="deleteVocabWord('+w.id+')" title="Remove">&#10005;</button></td>'
+        + '</tr>';
+    }).join('');
+  };
+
+  window.editVocabField = async function(id, field, value) {
+    var word = vocabWords.find(function(w) { return w.id === id; });
+    if (!word) return;
+    word[field] = value.trim();
+    try {
+      var update = {};
+      update[field] = value.trim();
+      await sb.from('vocab').update(update).eq('id', id);
+    } catch(e) {}
+    saveVocabLocal();
+  };
+
+})();
+</script>
+</body>
+</html>  function hl(text) {
       if (!search || !text) return escHtml(text || '');
       var escaped = escHtml(text);
       var escapedSearch = escHtml(search);
