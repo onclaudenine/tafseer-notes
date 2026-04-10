@@ -170,17 +170,22 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .root-tip-loading{font-size:10px;color:rgba(255,255,255,0.5);font-style:italic}
 
 /* morphology panel */
-.morph-panel{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:white;border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:12px 14px;z-index:300;min-width:200px;max-width:280px;box-shadow:0 8px 24px rgba(0,0,0,0.12);display:none;text-align:right;direction:rtl}
+.morph-panel{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:white;border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:12px 14px;z-index:300;min-width:240px;max-width:320px;box-shadow:0 8px 24px rgba(0,0,0,0.12);display:none;direction:ltr}
 .morph-panel.visible{display:block}
 .morph-panel::before{content:'';position:absolute;bottom:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-bottom-color:var(--border)}
 .morph-panel::after{content:'';position:absolute;bottom:calc(100% - 1px);left:50%;transform:translateX(-50%);border:6px solid transparent;border-bottom-color:white}
 .morph-word-ar{font-family:"Amiri",serif;font-size:1.4rem;color:var(--ink);margin-bottom:6px;text-align:center;direction:rtl}
-.morph-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:3px 0;border-bottom:1px solid var(--surface-2);font-size:12px}
+.morph-lang-tabs{display:flex;gap:0;margin-bottom:8px;border:.5px solid var(--border);border-radius:var(--radius);overflow:hidden;width:fit-content}
+.morph-lang-tab{padding:3px 10px;font-size:11px;font-weight:500;cursor:pointer;border:none;background:var(--surface-2);color:var(--ink-muted);font-family:DM Sans,sans-serif}
+.morph-lang-tab.active{background:var(--teal);color:white}
+.morph-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:4px 0;border-bottom:1px solid var(--surface-2);font-size:12px}
 .morph-row:last-child{border-bottom:none}
-.morph-label{color:var(--ink-muted);font-size:11px;white-space:nowrap;direction:ltr;text-align:left}
-.morph-val{color:var(--ink);font-family:"Amiri",serif;font-size:13px;direction:rtl}
+.morph-label-en{color:var(--ink-muted);font-size:11px;white-space:nowrap;direction:ltr;text-align:left;flex-shrink:0}
+.morph-label-ar{color:var(--ink-muted);font-size:11px;white-space:nowrap;direction:rtl;text-align:right;flex-shrink:0;font-family:"Amiri",serif;font-size:12px}
+.morph-val-en{color:var(--ink);font-size:12px;direction:ltr;text-align:right}
+.morph-val-ar{color:var(--ink);font-family:"Amiri",serif;font-size:13px;direction:rtl;text-align:right}
 .morph-seg-divider{height:1px;background:var(--teal-light);margin:6px 0}
-.morph-close{position:absolute;top:6px;left:8px;background:none;border:none;cursor:pointer;color:var(--ink-faint);font-size:16px;padding:0;direction:ltr}
+.morph-close{position:absolute;top:6px;right:8px;background:none;border:none;cursor:pointer;color:var(--ink-faint);font-size:16px;padding:0}
 
 /* word-by-word */
 .wbw-toggle{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 12px;background:var(--gold-light);color:var(--gold);border:1px solid #e8d0a8;border-radius:99px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
@@ -378,9 +383,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
         <div class="section-label" style="margin:0">Surahs studied</div>
-        <button id="export-btn" onclick="exportToDocx()" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--teal);color:white;border:none;border-radius:var(--radius);font-family:DM Sans,sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:background .2s" onmouseover="this.style.background='var(--teal-mid)'" onmouseout="this.style.background='var(--teal)'">
-          &#128229; Export to Word / OneNote
-        </button>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <select id="export-surah-filter" style="font-size:13px;padding:8px 10px;border-radius:var(--radius);border:1.5px solid var(--border)">
+            <option value="">All surahs</option>
+          </select>
+          <button id="export-btn" onclick="exportToDocx()" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--teal);color:white;border:none;border-radius:var(--radius);font-family:DM Sans,sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:background .2s" onmouseover="this.style.background='var(--teal-mid)'" onmouseout="this.style.background='var(--teal)'">
+            &#128229; Export to Word
+          </button>
+        </div>
       </div>
       <div class="status-msg" id="export-msg" style="margin-bottom:.75rem"></div>
       <div id="surah-breakdown"></div>
@@ -1554,17 +1564,23 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     msg.className = 'status-msg loading';
     msg.textContent = 'Building document...';
 
+    // Filter by selected surah
+    var surahFilter = document.getElementById('export-surah-filter') ? document.getElementById('export-surah-filter').value : '';
+    var exportNotes = surahFilter
+      ? notes.filter(function(n){ return (n.surahNum+'|'+n.surahName) === surahFilter; })
+      : notes.slice();
+
+    if (!exportNotes.length) { msg.className='status-msg err'; msg.textContent='No notes for that surah.'; btn.disabled=false; return; }
+
     // Group notes by surah
     var bySurah = {};
     var surahOrder = [];
-    notes.forEach(function(n) {
+    exportNotes.forEach(function(n) {
       var key = (n.surahNum ? String(n.surahNum).padStart(3,'0') : '999') + '|' + (n.surahNum||'0') + '|' + n.surahName;
       if (!bySurah[key]) { bySurah[key] = []; surahOrder.push(key); }
       bySurah[key].push(n);
     });
-    // Sort by surah number
     surahOrder.sort();
-    // Remove duplicates
     surahOrder = surahOrder.filter(function(v,i,a){ return a.indexOf(v)===i; });
 
     // Build XML for a simple Word document
@@ -1623,6 +1639,47 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       return out;
     }
 
+    // Generate QR code as base64 PNG using canvas
+    async function generateQR(url) {
+      return new Promise(function(resolve) {
+        try {
+          var canvas = document.createElement('canvas');
+          canvas.width = 120; canvas.height = 120;
+          // Use qrcode library if available
+          if (window.QRCode) {
+            var qr = new QRCode(canvas, {text:url, width:120, height:120, correctLevel:QRCode.CorrectLevel.M});
+            setTimeout(function(){ resolve(canvas.toDataURL('image/png').split(',')[1]); }, 100);
+          } else {
+            // Load qrcode.js dynamically
+            var script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js';
+            script.onload = function() {
+              try {
+                var qr = new QRCode(canvas, {text:url, width:120, height:120, correctLevel:QRCode.CorrectLevel.M});
+                setTimeout(function(){ resolve(canvas.toDataURL('image/png').split(',')[1]); }, 150);
+              } catch(e) { resolve(null); }
+            };
+            script.onerror = function() { resolve(null); };
+            document.head.appendChild(script);
+          }
+        } catch(e) { resolve(null); }
+      });
+    }
+
+    // Collect all YouTube links to pre-generate QR codes
+    var qrMap = {};
+    var ytNotes = exportNotes.filter(function(n){return n.youtubeLink;});
+    if (ytNotes.length) {
+      msg.textContent = 'Generating QR codes...';
+      for (var qi = 0; qi < ytNotes.length; qi++) {
+        var ytUrl = ytNotes[qi].youtubeLink;
+        if (!qrMap[ytUrl]) {
+          qrMap[ytUrl] = await generateQR(ytUrl);
+        }
+      }
+    }
+    msg.textContent = 'Building document...';
+
     function stripHtml(html) {
       if (!html) return '';
       return html
@@ -1656,7 +1713,37 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       if (stripHtml(note.groupNotes)) out += labelValuePara('Study group notes', stripHtml(note.groupNotes));
       if (stripHtml(note.reflection)) out += labelValuePara('Personal reflection', stripHtml(note.reflection));
       if (note.action)     out += labelValuePara('Action point', note.action, 'EAF6F0');
-      if (note.youtubeLink) out += labelValuePara('Video link', note.youtubeLink);
+      if (note.youtubeLink) {
+        out += labelValuePara('Video link', note.youtubeLink);
+        // QR code image or URL fallback
+        var qrInfo = qrDrawings[note.youtubeLink];
+        if (qrInfo) {
+          out += '<w:p><w:pPr><w:spacing w:before="80" w:after="80"/></w:pPr>'
+            +'<w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/><w:b/><w:sz w:val="18"/><w:szCs w:val="18"/><w:color w:val="'+TEAL+'"/></w:rPr><w:t xml:space="preserve">QR Code:  </w:t></w:r>'
+            +'<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0">'
+            +'<wp:extent cx="1143000" cy="1143000"/>'
+            +'<wp:docPr id="1" name="QR"/>'
+            +'<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
+            +'<a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">'
+            +'<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">'
+            +'<pic:nvPicPr><pic:cNvPr id="0" name="QR"/><pic:cNvPicPr/></pic:nvPicPr>'
+            +'<pic:blipFill><a:blip r:embed="'+qrInfo.rId+'"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill>'
+            +'<pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="1143000" cy="1143000"/></a:xfrm>'
+            +'<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr>'
+            +'</pic:pic></a:graphicData></a:graphic>'
+            +'</wp:inline></w:drawing></w:r></w:p>';
+        } else {
+          out += para('\u25a2 QR: ' + note.youtubeLink, {size:'15', color:'888880', shade:'F5F5F0'});
+        }
+        // Timestamps
+        if (note.timestamps && note.timestamps.length) {
+          out += para('Video timestamps:', {bold:true, size:'18', color:TEAL, spacing:'80', spacingAfter:'40'});
+          note.timestamps.slice().sort(function(a,b){return a.time-b.time;}).forEach(function(ts){
+            out += para('[' + ts.label + ']' + (ts.comment ? '  ' + ts.comment : ''), {size:'18', spacing:'40', spacingAfter:'40'});
+          });
+          out += para('', {size:'16'});
+        }
+      }
       // Divider
       out += para('', {borderBottom:true, spacing:'120', spacingAfter:'120'});
       return out;
@@ -1672,7 +1759,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     body += para('In the name of Allah, the Most Gracious, the Most Merciful', {size:'18', color:'888880', center:true, spacing:'80'});
     body += para('', {size:'20', spacing:'240'});
     body += para('Exported: ' + today, {size:'18', color:'888880', center:true});
-    body += para('Total notes: ' + notes.length + '  |  Surahs covered: ' + surahOrder.length, {size:'18', color:'888880', center:true, spacing:'80'});
+    body += para('Total notes: ' + exportNotes.length + '  |  Surahs covered: ' + surahOrder.length, {size:'18', color:'888880', center:true, spacing:'80'});
     body += pageBreak();
 
     // Surah sections
@@ -1686,12 +1773,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       body += para((surahNum?surahNum+'. ':'')+surahName, {bold:true, size:'36', color:TEAL, borderBottom:true, spacing:'240', spacingAfter:'160'});
       body += para(surahNotes.length+' note'+(surahNotes.length!==1?'s':''), {size:'18', color:'888880', spacingAfter:'200'});
 
-      // Notes sorted by ayah number
-      surahNotes.sort(function(a,b){
+      // Surah-level notes first, then Aayat-level sorted by ayah
+      var surahLevel = surahNotes.filter(function(n){return n.level==='Surah-level';});
+      var ayatLevel  = surahNotes.filter(function(n){return n.level!=='Surah-level';});
+      ayatLevel.sort(function(a,b){
         var an = parseInt(a.ayah)||0, bn = parseInt(b.ayah)||0;
         return an - bn;
       });
-      surahNotes.forEach(function(note) {
+      surahLevel.concat(ayatLevel).forEach(function(note) {
         body += noteBlock(note);
       });
 
@@ -1710,7 +1799,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       'xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" ' +
       'xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" ' +
       'xmlns:w10="urn:schemas-microsoft-com:office:word" ' +
-      'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" ' +
+      'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
+      'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" '
+      'xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture" '
+      'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ' +
       'xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" ' +
       'xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" ' +
       'xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" ' +
@@ -1723,6 +1815,20 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       '</w:sectPr>' +
       '</w:body></w:document>';
 
+    // Collect QR image data for zip
+    var qrImages = [];
+    var qrRels = '';
+    var qrDrawings = {};
+    var rIdCounter = 2;  // rId1 is settings
+    Object.keys(qrMap).forEach(function(url) {
+      if (!qrMap[url]) return;
+      var rId = 'rId' + rIdCounter++;
+      var imgName = 'image' + (rIdCounter-2) + '.png';
+      qrImages.push({rId:rId, imgName:imgName, data:qrMap[url]});
+      qrRels += '<Relationship Id="'+rId+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/'+imgName+'"/>';
+      qrDrawings[url] = {rId:rId, imgName:imgName};
+    });
+
     // Build the .docx zip using JSZip
     try {
       var zip = new JSZip();
@@ -1733,6 +1839,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
         '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
         '<Default Extension="xml" ContentType="application/xml"/>' +
+        '<Default Extension="png" ContentType="image/png"/>' +
         '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
         '<Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/>' +
         '</Types>');
@@ -1749,7 +1856,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
         '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
         '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/>' +
+        qrRels +
         '</Relationships>');
+      // Add QR images to zip
+      qrImages.forEach(function(img) {
+        zip.file('word/media/'+img.imgName, img.data, {base64:true});
+      });
 
       // word/settings.xml
       zip.file('word/settings.xml',
@@ -1766,7 +1878,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
       a.href = url;
-      a.download = 'Quran_Study_Journal_' + new Date().toISOString().slice(0,10) + '.docx';
+      var fileLabel = surahFilter ? surahFilter.split('|').slice(1).join('_').replace(/\s+/g,'_') : 'All_Surahs';
+      a.download = 'Quran_Study_Journal_' + fileLabel + '_' + new Date().toISOString().slice(0,10) + '.docx';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -2084,7 +2197,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         var morphPanelId = 'morp-' + (surahNum||0) + '-' + ayahNum + '-' + wordPos;
         html += '<div class="wbw-word" id="'+tipId+'" data-sn="'+surahNum+'" data-an="'+ayahNum+'" data-wp="'+wordPos+'" data-ar="'+encodeURIComponent(w.arabic)+'" onclick="wbwClick(this)">'
           + '<div class="root-tip"><span class="root-tip-label">Root</span><span class="root-tip-arabic root-tip-loading" id="'+tipId+'-root">...</span></div>'
-          + '<div class="morph-panel" id="'+morphPanelId+'"><button class="morph-close" onclick="event.stopPropagation();closeMorphPanel()">&#10005;</button></div>'
+          + '<div class="morph-panel" id="'+morphPanelId+'"></div>'
           + '<div class="wbw-arabic">'+escHtml(w.arabic)+'</div>'
           + '<div class="wbw-translit">'+escHtml(w.translit)+'</div>'
           + '<div class="wbw-meaning">'+escHtml(w.meaning)+'</div>'
@@ -2163,56 +2276,177 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     return result;
   }
 
-  function morphRowHtml(label, value) {
-    if (!value) return '';
-    return '<div class="morph-row"><span class="morph-label">'+label+'</span><span class="morph-val">'+escHtml(value)+'</span></div>';
+  // Bilingual morphology term maps
+  var MORPH_EN = {
+    // types
+    t_N:'Noun', t_PN:'Proper noun', t_PRON:'Pronoun', t_DEM:'Demonstrative',
+    t_REL:'Relative pronoun', t_T:'Time adverb', t_LOC:'Place adverb',
+    t_V:'Verb', t_NV:'Verbal noun (NV)', t_COND:'Conditional', t_INTG:'Interrogative',
+    // particles
+    pt_P:'Preposition', pt_CONJ:'Conjunction', pt_NEG:'Negation particle',
+    pt_FUT:'Future particle', pt_EMPH:'Emphasis lam', pt_VOC:'Vocative particle',
+    pt_SUB:'Subordinating particle', pt_ACC:'Accusative particle', pt_EXP:'Exception particle',
+    pt_CERT:'Certainty particle', pt_RES:'Restriction particle', pt_ANS:'Response particle',
+    pt_CAUS:'Causative particle', pt_INC:'Inceptive particle', pt_REM:'Resumptive particle',
+    pt_PRO:'Prohibition particle', pt_IMPV:'Imperative lam', pt_DET:'Definite article',
+    pt_SUP:'Redundant particle', pt_INT:'Explanatory particle', pt_AMD:'Retraction particle',
+    pt_AVR:'Deterrent particle', pt_CIRC:'Circumstantial particle', pt_COM:'Accompaniment waw',
+    pt_EQ:'Equalization particle', pt_EXH:'Incitement particle', pt_EXL:'Enumerative particle',
+    pt_PREV:'Preventive particle', pt_RET:'Resumptive particle', pt_RSLT:'Result particle',
+    pt_SUR:'Surprise particle', pt_ATT:'Attention particle', pt_DIST:'Distance lam',
+    pt_ADDR:'Address particle', pt_INL:'Disconnected letters', pt_PRP:'Purpose lam',
+    // noun forms
+    f_ACT_PCPL:'Active participle', f_PASS_PCPL:'Passive participle', f_VN:'Verbal noun (masdar)',
+    // case / irab
+    c_NOM:'Nominative (مرفوع)', c_ACC:'Accusative (منصوب)', c_GEN:'Genitive (مجرور)',
+    // verb tense
+    tn_PERF:'Past (ماضي)', tn_IMPF:'Present/Future (مضارع)', tn_IMPV:'Imperative (أمر)',
+    // verb mood
+    m_IND:'Indicative (مرفوع)', m_SUBJ:'Subjunctive (منصوب)', m_JUS:'Jussive (مجزوم)',
+    // gender
+    g_M:'Masculine', g_F:'Feminine',
+    // number
+    n_S:'Singular', n_D:'Dual', n_P:'Plural',
+    // person
+    p_1:'1st person', p_2:'2nd person', p_3:'3rd person',
+    // definiteness
+    d_INDEF:'Indefinite (نكرة)',
+    // position
+    pos_P:'Prefix', pos_S:'Suffix',
+    // attr
+    a_ADJ:'Adjective (نعت)', a_PASS:'Passive (لم يسمّ فاعله)'
+  };
+
+  var MORPH_AR = {
+    // labels
+    pos:'الموضع', t:'النوع', pt:'الحرف', r:'الجذر', l:'الصيغة',
+    vf:'باب الفعل', tn:'الزمن', m:'الإعراب', c:'الإعراب',
+    g:'الجنس', n:'العدد', gn:'الجنس والعدد', p:'الشخص',
+    f:'الوزن', d:'التعريف', a:'الوصف'
+  };
+
+  var MORPH_EN_LABELS = {
+    pos:'Position', t:'Type', pt:'Particle', r:'Root', l:'Lemma',
+    vf:'Verb form', tn:'Tense', m:'Mood / Iʿrāb', c:'Case / Iʿrāb',
+    g:'Gender', n:'Number', gn:'Gender & number', p:'Person',
+    f:'Form', d:'Definiteness', a:'Attribute'
+  };
+
+  var morphLang = 'both'; // 'en', 'ar', 'both'
+
+  function morphEnVal(key, val) {
+    // Try specific lookup first
+    var lookup = MORPH_EN[key + '_' + val] || MORPH_EN[key + '_' + val.replace(/\s.*/, '')];
+    if (lookup) return lookup;
+    // Generic fallbacks for gender/number combos
+    if (key === 'gn') {
+      return val.split('、').map(function(v) {
+        if (v==='مذكر') return 'Masculine';
+        if (v==='مؤنث') return 'Feminine';
+        if (v==='مفرد') return 'Singular';
+        if (v==='مثنى') return 'Dual';
+        if (v==='جمع') return 'Plural';
+        return v;
+      }).join(', ');
+    }
+    // For root and lemma, show as-is (Arabic script)
+    if (key === 'r' || key === 'l' || key === 'vf') return val;
+    return val; // fallback to Arabic
   }
 
-  function buildMorphHtml(wordAr, surah, ayah, wordPos) {
-    if (!morphData) return '<div style="font-size:12px;color:var(--ink-muted);padding:4px">جاري التحميل...</div>';
+  function separateLetters(str) {
+    // Insert zero-width non-joiner between each letter so they show in isolated form
+    // Also add a visible space between them for clarity
+    if (!str) return str;
+    return str.split('').join('‌ ');  // ZWNJ + space between each letter
+  }
+
+  function morphRowHtml(key, arVal) {
+    if (!arVal) return '';
+    var displayArVal = (key === 'r') ? separateLetters(arVal) : arVal;
+    var enVal = morphEnVal(key, arVal);
+    var arLabel = MORPH_AR[key] || '';
+    var enLabel = MORPH_EN_LABELS[key] || '';
+    var valIsArabic = (key === 'r' || key === 'l' || key === 'vf');
+
+    if (morphLang === 'en') {
+      return '<div class="morph-row">'
+        + '<span class="morph-label-en">' + enLabel + '</span>'
+        + '<span class="morph-val-en' + (valIsArabic?' morph-val-ar':'') + '">' + escHtml(valIsArabic ? displayArVal : enVal) + '</span>'
+        + '</div>';
+    } else if (morphLang === 'ar') {
+      return '<div class="morph-row" style="direction:rtl">'
+        + '<span class="morph-label-ar">' + arLabel + '</span>'
+        + '<span class="morph-val-ar">' + escHtml(arVal) + '</span>'
+        + '</div>';
+    } else {
+      // Both — show label in English, value as EN (AR)
+      var combined = valIsArabic ? escHtml(arVal) : escHtml(enVal) + ' <span style="color:var(--ink-muted);font-family:Amiri,serif;font-size:12px">(' + escHtml(arVal) + ')</span>';
+      return '<div class="morph-row">'
+        + '<span class="morph-label-en">' + enLabel + '</span>'
+        + '<span class="morph-val-en">' + combined + '</span>'
+        + '</div>';
+    }
+  }
+
+  window.setMorphLang = function(lang, btn) {
+    morphLang = lang;
+    // Update tab buttons
+    var tabs = btn.parentElement.querySelectorAll('.morph-lang-tab');
+    tabs.forEach(function(t) { t.classList.remove('active'); });
+    btn.classList.add('active');
+    // Re-render current panel
+    if (activeMorphPanel) {
+      var nid = activeMorphPanel._morphData;
+      if (nid) buildMorphHtml(nid.wordAr, nid.surah, nid.ayah, nid.wordPos, activeMorphPanel);
+    }
+  };
+
+  function buildMorphHtml(wordAr, surah, ayah, wordPos, panel) {
+    if (!morphData) return '<div style="font-size:12px;color:var(--ink-muted);padding:4px">Loading...</div>';
     var key = surah + ':' + ayah + ':' + wordPos;
     var entry = morphData[key];
-    if (!entry) return '<div style="font-size:12px;color:var(--ink-muted);padding:4px">لا تحليل متاح</div>';
-    
+    if (!entry) return '<div style="font-size:12px;color:var(--ink-muted);padding:4px">No analysis available</div>';
+
     var segs = Array.isArray(entry) ? entry : [entry];
-    var html = '<div class="morph-word-ar">' + escHtml(wordAr) + '</div>';
-    
+
+    var html = '<button class="morph-close" onclick="event.stopPropagation();closeMorphPanel()">&#10005;</button>';
+    html += '<div class="morph-word-ar">' + escHtml(wordAr) + '</div>';
+
+    // Language tabs
+    html += '<div class="morph-lang-tabs">'
+      + '<button class="morph-lang-tab' + (morphLang==="en"?' active':'') + '" data-ml="en" onclick="setMorphLang(this.dataset.ml,this)">EN</button>'
+      + '<button class="morph-lang-tab' + (morphLang==="both"?' active':'') + '" data-ml="both" onclick="setMorphLang(this.dataset.ml,this)">EN+AR</button>'
+      + '<button class="morph-lang-tab' + (morphLang==="ar"?' active':'') + '" data-ml="ar" onclick="setMorphLang(this.dataset.ml,this)">AR</button>'
+      + '</div>';
+
     segs.forEach(function(segStr, i) {
       if (!segStr) return;
       if (i > 0) html += '<div class="morph-seg-divider"></div>';
       var seg = parseMorphSeg(segStr);
-      
-      // Position (prefix/suffix)
-      if (seg.pos) html += morphRowHtml('الموضع', seg.pos);
-      // Type
-      if (seg.t) html += morphRowHtml('النوع', seg.t);
-      // Particle type
-      if (seg.pt) html += morphRowHtml('الحرف', seg.pt);
-      // Root
-      if (seg.r) html += morphRowHtml('الجذر', seg.r);
-      // Lemma
-      if (seg.l) html += morphRowHtml('الصيغة', seg.l);
-      // Verb form
-      if (seg.vf) html += morphRowHtml('باب الفعل', seg.vf);
-      // Tense
-      if (seg.tn) html += morphRowHtml('الزمن', seg.tn);
-      // Mood/case/irāb
-      if (seg.m) html += morphRowHtml('الإعراب', seg.m);
-      if (seg.c) html += morphRowHtml('الإعراب', seg.c);
-      // Gender & number
-      if (seg.g) html += morphRowHtml('الجنس', seg.g);
-      if (seg.n) html += morphRowHtml('العدد', seg.n);
-      if (seg.gn) html += morphRowHtml('الجنس والعدد', seg.gn);
-      // Person
-      if (seg.p) html += morphRowHtml('الشخص', seg.p);
-      // Noun form (مصدر, اسم فاعل, etc)
-      if (seg.f) html += morphRowHtml('الوزن', seg.f);
-      // Definiteness
-      if (seg.d) html += morphRowHtml('التعريف', seg.d);
-      // Attr
-      if (seg.a) html += morphRowHtml('الوصف', seg.a);
+      if (seg.pos) html += morphRowHtml('pos', seg.pos);
+      if (seg.t)   html += morphRowHtml('t', seg.t);
+      if (seg.pt)  html += morphRowHtml('pt', seg.pt);
+      if (seg.r)   html += morphRowHtml('r', seg.r);
+      if (seg.l)   html += morphRowHtml('l', seg.l);
+      if (seg.vf)  html += morphRowHtml('vf', seg.vf);
+      if (seg.tn)  html += morphRowHtml('tn', seg.tn);
+      if (seg.m)   html += morphRowHtml('m', seg.m);
+      if (seg.c)   html += morphRowHtml('c', seg.c);
+      if (seg.g)   html += morphRowHtml('g', seg.g);
+      if (seg.n)   html += morphRowHtml('n', seg.n);
+      if (seg.gn)  html += morphRowHtml('gn', seg.gn);
+      if (seg.p)   html += morphRowHtml('p', seg.p);
+      if (seg.f)   html += morphRowHtml('f', seg.f);
+      if (seg.d)   html += morphRowHtml('d', seg.d);
+      if (seg.a)   html += morphRowHtml('a', seg.a);
     });
-    
+
+    if (panel) {
+      panel._morphData = {wordAr:wordAr, surah:surah, ayah:ayah, wordPos:wordPos};
+      panel.innerHTML = html;
+      panel.classList.add('visible');
+    }
     return html;
   }
 
@@ -2482,11 +2716,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     activeMorphPanel = panel;
 
     loadMorphData(function() {
-      // Re-fetch panel by ID in case DOM changed
       var p = document.getElementById(panelId);
       if (!p) return;
-      p.innerHTML = buildMorphHtml(wordAr, surah, ayah, wordPos);
-      p.classList.add('visible');
+      buildMorphHtml(wordAr, surah, ayah, wordPos, p);
       activeMorphPanel = p;
     });
   };
