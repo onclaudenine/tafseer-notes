@@ -162,8 +162,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
 /* root letter tooltip */
 .wbw-word{position:relative}
-.wbw-word:hover .root-tip{display:flex}
-.root-tip{display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:white;border-radius:var(--radius);padding:6px 10px;white-space:nowrap;z-index:200;flex-direction:column;align-items:center;gap:2px;min-width:60px;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.root-tip{display:none;position:fixed;background:var(--ink);color:white;border-radius:var(--radius);padding:6px 10px;white-space:nowrap;z-index:9998;flex-direction:column;align-items:center;gap:2px;min-width:60px;box-shadow:0 4px 12px rgba(0,0,0,0.2);pointer-events:none}
 .root-tip::after{content:'';position:absolute;bottom:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-bottom-color:var(--ink)}
 .root-tip-label{font-size:9px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.05em}
 .root-tip-arabic{font-family:"Amiri",serif;font-size:1.3rem;direction:rtl;color:white;line-height:1.4;letter-spacing:2px}
@@ -171,6 +170,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
 /* morphology panel */
 .morph-panel{background:white;border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:12px 14px;min-width:260px;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,0.2);display:none;direction:ltr}
+.morph-panel.visible{display:block}
 .morph-panel.visible{display:block}
 .morph-word-ar{font-family:"Amiri",serif;font-size:1.8rem;color:var(--ink);margin-bottom:8px;text-align:center;direction:rtl}
 .morph-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid var(--surface-2);font-size:12px}
@@ -1142,6 +1142,20 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       h+='<div style="margin-top:6px;font-size:13px;color:var(--ink-muted)">'+ns.length+' note'+(ns.length!==1?'s':'')+' &middot; aayaat: '+ns.map(function(n){return n.ayah||'surah';}).join(', ')+'</div></div>';
     });
     document.getElementById('surah-breakdown').innerHTML=h||'<div class="empty-state"><div class="empty-icon">&#128211;</div><h3>Nothing yet</h3><p>Studied surahs will appear here.</p></div>';
+    // Populate export surah dropdown
+    var ef = document.getElementById('export-surah-filter');
+    if (ef) {
+      var curVal = ef.value;
+      var seen2 = {};
+      var opts = '<option value="">All surahs</option>';
+      var sorted = notes.slice().sort(function(a,b){return (parseInt(a.surahNum)||999)-(parseInt(b.surahNum)||999);});
+      sorted.forEach(function(n){
+        var k = n.surahNum+'|'+n.surahName;
+        if (!seen2[k]) { seen2[k]=true; opts+='<option value="'+k+'">'+(n.surahNum?n.surahNum+'. ':'')+n.surahName+'</option>'; }
+      });
+      ef.innerHTML = opts;
+      if (curVal) ef.value = curVal;
+    }
   }
 
   // ── EDIT NOTE ──
@@ -1635,46 +1649,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       return out;
     }
 
-    // Generate QR code as base64 PNG using canvas
-    async function generateQR(url) {
-      return new Promise(function(resolve) {
-        try {
-          var canvas = document.createElement('canvas');
-          canvas.width = 120; canvas.height = 120;
-          // Use qrcode library if available
-          if (window.QRCode) {
-            var qr = new QRCode(canvas, {text:url, width:120, height:120, correctLevel:QRCode.CorrectLevel.M});
-            setTimeout(function(){ resolve(canvas.toDataURL('image/png').split(',')[1]); }, 100);
-          } else {
-            // Load qrcode.js dynamically
-            var script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js';
-            script.onload = function() {
-              try {
-                var qr = new QRCode(canvas, {text:url, width:120, height:120, correctLevel:QRCode.CorrectLevel.M});
-                setTimeout(function(){ resolve(canvas.toDataURL('image/png').split(',')[1]); }, 150);
-              } catch(e) { resolve(null); }
-            };
-            script.onerror = function() { resolve(null); };
-            document.head.appendChild(script);
-          }
-        } catch(e) { resolve(null); }
-      });
-    }
-
-    // Collect all YouTube links to pre-generate QR codes
-    var qrMap = {};
-    var ytNotes = exportNotes.filter(function(n){return n.youtubeLink;});
-    if (ytNotes.length) {
-      msg.textContent = 'Generating QR codes...';
-      for (var qi = 0; qi < ytNotes.length; qi++) {
-        var ytUrl = ytNotes[qi].youtubeLink;
-        if (!qrMap[ytUrl]) {
-          qrMap[ytUrl] = await generateQR(ytUrl);
-        }
-      }
-    }
-    msg.textContent = 'Building document...';
+    // No QR pre-generation needed — handled inline via URL text
 
     function stripHtml(html) {
       if (!html) return '';
@@ -1711,26 +1686,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       if (note.action)     out += labelValuePara('Action point', note.action, 'EAF6F0');
       if (note.youtubeLink) {
         out += labelValuePara('Video link', note.youtubeLink);
-        // QR code image or URL fallback
-        var qrInfo = qrDrawings[note.youtubeLink];
-        if (qrInfo) {
-          out += '<w:p><w:pPr><w:spacing w:before="80" w:after="80"/></w:pPr>'
-            +'<w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/><w:b/><w:sz w:val="18"/><w:szCs w:val="18"/><w:color w:val="'+TEAL+'"/></w:rPr><w:t xml:space="preserve">QR Code:  </w:t></w:r>'
-            +'<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0">'
-            +'<wp:extent cx="1143000" cy="1143000"/>'
-            +'<wp:docPr id="1" name="QR"/>'
-            +'<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
-            +'<a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">'
-            +'<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">'
-            +'<pic:nvPicPr><pic:cNvPr id="0" name="QR"/><pic:cNvPicPr/></pic:nvPicPr>'
-            +'<pic:blipFill><a:blip r:embed="'+qrInfo.rId+'"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill>'
-            +'<pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="1143000" cy="1143000"/></a:xfrm>'
-            +'<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr>'
-            +'</pic:pic></a:graphicData></a:graphic>'
-            +'</wp:inline></w:drawing></w:r></w:p>';
-        } else {
-          out += para('\u25a2 QR: ' + note.youtubeLink, {size:'15', color:'888880', shade:'F5F5F0'});
-        }
+        out += para('Link: ' + note.youtubeLink, {size:'16', color:'888880', shade:'F5F5F0'});
         // Timestamps
         if (note.timestamps && note.timestamps.length) {
           out += para('Video timestamps:', {bold:true, size:'18', color:TEAL, spacing:'80', spacingAfter:'40'});
@@ -1796,8 +1752,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       'xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" ' +
       'xmlns:w10="urn:schemas-microsoft-com:office:word" ' +
       'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
-      'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" '
-      'xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture" '
       'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ' +
       'xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" ' +
       'xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" ' +
@@ -1811,20 +1765,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       '</w:sectPr>' +
       '</w:body></w:document>';
 
-    // Collect QR image data for zip
-    var qrImages = [];
-    var qrRels = '';
-    var qrDrawings = {};
-    var rIdCounter = 2;  // rId1 is settings
-    Object.keys(qrMap).forEach(function(url) {
-      if (!qrMap[url]) return;
-      var rId = 'rId' + rIdCounter++;
-      var imgName = 'image' + (rIdCounter-2) + '.png';
-      qrImages.push({rId:rId, imgName:imgName, data:qrMap[url]});
-      qrRels += '<Relationship Id="'+rId+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/'+imgName+'"/>';
-      qrDrawings[url] = {rId:rId, imgName:imgName};
-    });
-
     // Build the .docx zip using JSZip
     try {
       var zip = new JSZip();
@@ -1835,7 +1775,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
         '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
         '<Default Extension="xml" ContentType="application/xml"/>' +
-        '<Default Extension="png" ContentType="image/png"/>' +
         '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
         '<Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/>' +
         '</Types>');
@@ -1852,12 +1791,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
         '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
         '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/>' +
-        qrRels +
         '</Relationships>');
-      // Add QR images to zip
-      qrImages.forEach(function(img) {
-        zip.file('word/media/'+img.imgName, img.data, {base64:true});
-      });
 
       // word/settings.xml
       zip.file('word/settings.xml',
@@ -2202,6 +2136,35 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     html += '</div>';
     container.innerHTML = '<div class="wbw-scroll">' + html + '</div>';
 
+    // Wire up shared root tooltip on hover using JS (fixed position to avoid clipping)
+    requestAnimationFrame(function() {
+      var sharedRootTip = document.getElementById('shared-root-tip');
+      if (!sharedRootTip) {
+        sharedRootTip = document.createElement('div');
+        sharedRootTip.id = 'shared-root-tip';
+        sharedRootTip.className = 'root-tip';
+        sharedRootTip.innerHTML = '<span class="root-tip-label">Root</span><span class="root-tip-arabic" id="shared-root-tip-text"></span>';
+        document.body.appendChild(sharedRootTip);
+      }
+      container.querySelectorAll('.wbw-word').forEach(function(word) {
+        word.addEventListener('mouseenter', function(e) {
+          var rootSpan = word.querySelector('.root-tip-arabic');
+          var rootText = rootSpan ? rootSpan.textContent : '';
+          if (!rootText || rootText === '...') return;
+          var tipText = document.getElementById('shared-root-tip-text');
+          if (tipText) tipText.textContent = rootText;
+          var rect = word.getBoundingClientRect();
+          sharedRootTip.style.display = 'flex';
+          sharedRootTip.style.top = (rect.bottom + 6) + 'px';
+          sharedRootTip.style.left = (rect.left + rect.width/2) + 'px';
+          sharedRootTip.style.transform = 'translateX(-50%)';
+        });
+        word.addEventListener('mouseleave', function() {
+          sharedRootTip.style.display = 'none';
+        });
+      });
+    });
+
     // Load roots and fill in tooltips
     if (surahNum && ayahFrom !== undefined) {
       loadRootsData(function() {
@@ -2426,7 +2389,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     if (panel) {
       panel._morphData = {wordAr:wordAr, surah:surah, ayah:ayah, wordPos:wordPos};
       panel.innerHTML = html;
-      panel.classList.add('visible');
+      panel.style.display = 'block';
     }
     return html;
   }
