@@ -101,6 +101,18 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .attach-progress-bar{height:100%;background:var(--teal);border-radius:99px;transition:width .3s}
 /* note cards */
 .notes-list{display:flex;flex-direction:column;gap:12px}
+#notes-table tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+#notes-table tbody tr:last-child{border-bottom:none}
+#notes-table tbody tr:hover{background:var(--surface-2)}
+.nt-surah{font-family:"Lora",serif;font-size:13px;font-weight:600;color:var(--ink);padding:10px 12px;vertical-align:middle}
+.nt-ayah{font-size:13px;color:var(--ink-mid);padding:10px 12px;vertical-align:middle;white-space:nowrap}
+.nt-date{font-size:11px;color:var(--ink-muted);padding:10px 12px;vertical-align:middle;white-space:nowrap}
+.nt-icon{padding:10px 8px;text-align:center;vertical-align:middle;font-size:16px}
+.nt-actions{padding:8px;text-align:right;vertical-align:middle;white-space:nowrap}
+.nt-btn{background:none;border:1px solid var(--border);border-radius:var(--radius);padding:4px 10px;font-size:11px;cursor:pointer;color:var(--ink-mid);font-family:DM Sans,sans-serif;transition:all .15s}
+.nt-btn:hover{background:var(--teal-pale);border-color:var(--teal-light);color:var(--teal)}
+.nt-btn-edit{background:var(--teal);color:white;border-color:var(--teal)}
+.nt-btn-edit:hover{background:var(--teal-mid);border-color:var(--teal-mid);color:white}
 .note-card{background:white;border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;transition:border-color .2s}
 .note-card:hover{border-color:var(--teal-light)}
 .note-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
@@ -368,8 +380,30 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <option value="edited-desc">Recently edited</option>
         </select>
       </div>
-      <div id="search-summary" style="font-size:12px;color:var(--ink-muted);margin-bottom:.75rem;min-height:18px"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <div id="search-summary" style="font-size:12px;color:var(--ink-muted);min-height:18px"></div>
+        <div style="display:flex;gap:4px">
+          <button id="view-cards-btn" onclick="setNotesView('cards')" title="Card view" style="padding:5px 9px;border:1.5px solid var(--teal);border-radius:var(--radius);background:var(--teal);color:white;cursor:pointer;font-size:13px;line-height:1">&#9783;</button>
+          <button id="view-table-btn" onclick="setNotesView('table')" title="Table view" style="padding:5px 9px;border:1.5px solid var(--border);border-radius:var(--radius);background:white;color:var(--ink-muted);cursor:pointer;font-size:13px;line-height:1">&#9783;&#9783;</button>
+        </div>
+      </div>
       <div class="notes-list" id="notes-list"><div class="empty-state"><div class="empty-icon">&#128214;</div><h3>Loading notes...</h3></div></div>
+      <div id="notes-table-wrap" style="display:none;overflow-x:auto;border:1.5px solid var(--border);border-radius:var(--radius-lg);background:white">
+        <table id="notes-table" style="width:100%;border-collapse:collapse;min-width:600px">
+          <thead>
+            <tr style="background:var(--surface-2);border-bottom:1.5px solid var(--border)">
+              <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);white-space:nowrap">Surah</th>
+              <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);white-space:nowrap">Aayah</th>
+              <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);white-space:nowrap">Created</th>
+              <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);white-space:nowrap">Edited</th>
+              <th style="padding:10px 8px;text-align:center;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted)">Files</th>
+              <th style="padding:10px 8px;text-align:center;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted)">Video</th>
+              <th style="padding:10px 8px;width:90px"></th>
+            </tr>
+          </thead>
+          <tbody id="notes-table-body"></tbody>
+        </table>
+      </div>
     </div>
     <div class="section" id="tab-overview">
       <div class="stats-grid" style="margin-top:.25rem">
@@ -929,10 +963,22 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     sel.innerHTML=opts;if(cur)sel.value=cur;
   }
 
-  document.getElementById('search-input').addEventListener('input', function(){renderNotes(this.value);});
-  document.getElementById('filter-surah').addEventListener('change', function(){renderNotes();});
-  document.getElementById('filter-level').addEventListener('change', function(){renderNotes();});
-  document.getElementById('sort-by').addEventListener('change', function(){renderNotes();});
+  document.getElementById('sort-by').addEventListener('change', function(){
+    renderNotes();
+    if (notesView === 'table') renderNotesTable();
+  });
+  document.getElementById('filter-surah').addEventListener('change', function(){
+    renderNotes();
+    if (notesView === 'table') renderNotesTable();
+  });
+  document.getElementById('filter-level').addEventListener('change', function(){
+    renderNotes();
+    if (notesView === 'table') renderNotesTable();
+  });
+  document.getElementById('search-input').addEventListener('input', function(){
+    renderNotes(this.value);
+    if (notesView === 'table') renderNotesTable();
+  });
 
   function renderNotes(search) {
     var searchVal=(search!==undefined?search:document.getElementById('search-input').value).toLowerCase();
@@ -1009,7 +1055,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       });
     }
     list.innerHTML=filtered.map(function(n){
-      var h='<div class="note-card">';
+      var h='<div class="note-card" id="note-card-'+n.id+'">';
       h+='<div class="note-card-top"><div>';
       h+='<div class="note-surah">'+(n.surahNum?n.surahNum+'. ':'')+n.surahName+'</div>';
       if(n.ayah)h+='<div class="note-ayah">Aayah '+n.ayah+'</div>';
@@ -2910,6 +2956,112 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       await sb.from('vocab').update(update).eq('id', id);
     } catch(e) {}
     saveVocabLocal();
+  };
+
+
+  // ── NOTES TABLE / CARD VIEW TOGGLE ──
+  var notesView = 'cards'; // 'cards' or 'table'
+
+  window.setNotesView = function(view) {
+    notesView = view;
+    var cardsList = document.getElementById('notes-list');
+    var tableWrap = document.getElementById('notes-table-wrap');
+    var cardsBtn = document.getElementById('view-cards-btn');
+    var tableBtn = document.getElementById('view-table-btn');
+    if (view === 'table') {
+      cardsList.style.display = 'none';
+      tableWrap.style.display = 'block';
+      cardsBtn.style.background = 'white';
+      cardsBtn.style.color = 'var(--ink-muted)';
+      cardsBtn.style.borderColor = 'var(--border)';
+      tableBtn.style.background = 'var(--teal)';
+      tableBtn.style.color = 'white';
+      tableBtn.style.borderColor = 'var(--teal)';
+      renderNotesTable();
+    } else {
+      cardsList.style.display = 'flex';
+      tableWrap.style.display = 'none';
+      cardsBtn.style.background = 'var(--teal)';
+      cardsBtn.style.color = 'white';
+      cardsBtn.style.borderColor = 'var(--teal)';
+      tableBtn.style.background = 'white';
+      tableBtn.style.color = 'var(--ink-muted)';
+      tableBtn.style.borderColor = 'var(--border)';
+    }
+  };
+
+  function getFilteredNotes() {
+    var searchVal = (document.getElementById('search-input') ? document.getElementById('search-input').value : '').toLowerCase();
+    var sf = document.getElementById('filter-surah') ? document.getElementById('filter-surah').value : '';
+    var lf = document.getElementById('filter-level') ? document.getElementById('filter-level').value : '';
+    var sortBy = document.getElementById('sort-by') ? document.getElementById('sort-by').value : 'date-desc';
+
+    var filtered = notes.filter(function(n) {
+      if (sf && (n.surahNum+'|'+n.surahName) !== sf) return false;
+      if (lf && n.level !== lf) return false;
+      if (searchVal && searchVal !== '__action__' && searchVal !== '__video__') {
+        var blob = [n.surahNum,n.surahName,n.ayah,n.arabic,n.translation,n.groupNotes,n.reflection,n.action,n.youtubeLink].join(' ').toLowerCase();
+        if (blob.indexOf(searchVal) === -1) return false;
+      }
+      if (searchVal === '__action__') return !!n.action;
+      if (searchVal === '__video__') return !!n.youtubeLink;
+      return true;
+    });
+
+    function parseNoteDate(n) { var d = new Date(n.date); return isNaN(d)?0:d.getTime(); }
+    function parseEditDate(n) { if(!n.editedAt) return 0; var d=new Date(n.editedAt); return isNaN(d)?0:d.getTime(); }
+
+    filtered.sort(function(a,b) {
+      switch(sortBy) {
+        case 'date-asc': return parseNoteDate(a)-parseNoteDate(b);
+        case 'surah-asc': var sa=parseInt(a.surahNum)||999,sb2=parseInt(b.surahNum)||999; return sa!==sb2?sa-sb2:(parseInt(a.ayah)||0)-(parseInt(b.ayah)||0);
+        case 'surah-desc': var sa2=parseInt(a.surahNum)||0,sb3=parseInt(b.surahNum)||0; return sa2!==sb3?sb3-sa2:(parseInt(b.ayah)||0)-(parseInt(a.ayah)||0);
+        case 'edited-desc': return (parseEditDate(b)||parseNoteDate(b))-(parseEditDate(a)||parseNoteDate(a));
+        default: return parseNoteDate(b)-parseNoteDate(a);
+      }
+    });
+    return filtered;
+  }
+
+  function renderNotesTable() {
+    var filtered = getFilteredNotes();
+    var tbody = document.getElementById('notes-table-body');
+    if (!tbody) return;
+    if (!filtered.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--ink-faint);font-size:13px">'
+        + (notes.length ? 'No matches' : 'No notes yet') + '</td></tr>';
+      return;
+    }
+    tbody.innerHTML = filtered.map(function(n) {
+      var surahLabel = (n.surahNum ? n.surahNum + '. ' : '') + n.surahName;
+      var ayahLabel = n.ayah || '—';
+      var dateLabel = n.date || '—';
+      var editLabel = n.editedAt || '—';
+      var hasAttach = n.attachments && n.attachments.length > 0;
+      var hasVideo = !!n.youtubeLink;
+      return '<tr>'
+        + '<td class="nt-surah">' + escHtml(surahLabel) + '</td>'
+        + '<td class="nt-ayah">' + escHtml(ayahLabel) + '</td>'
+        + '<td class="nt-date">' + escHtml(dateLabel) + '</td>'
+        + '<td class="nt-date">' + escHtml(editLabel) + '</td>'
+        + '<td class="nt-icon">' + (hasAttach ? '<span title="'+n.attachments.length+' attachment(s)">&#128206;</span>' : '<span style="color:var(--ink-faint);font-size:12px">—</span>') + '</td>'
+        + '<td class="nt-icon">' + (hasVideo ? '<span title="Video linked">&#9654;</span>' : '<span style="color:var(--ink-faint);font-size:12px">—</span>') + '</td>'
+        + '<td class="nt-actions">'
+        + '<button class="nt-btn" onclick="viewNoteCard('+n.id+')" title="View full note">&#128065;</button> '
+        + '<button class="nt-btn nt-btn-edit" onclick="editNote('+n.id+')" title="Edit">Edit</button>'
+        + '</td>'
+        + '</tr>';
+    }).join('');
+  }
+
+  window.viewNoteCard = function(id) {
+    // Switch to card view, scroll to the note
+    setNotesView('cards');
+    renderNotes();
+    setTimeout(function() {
+      var el = document.getElementById('note-card-' + id);
+      if (el) el.scrollIntoView({behavior:'smooth', block:'center'});
+    }, 100);
   };
 
 })();
