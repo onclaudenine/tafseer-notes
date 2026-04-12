@@ -468,6 +468,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div id="view-modal-title" style="font-family:Lora,serif;font-size:1.1rem;font-weight:600;color:var(--teal)"></div>
       <div style="display:flex;gap:8px;align-items:center">
         <button id="view-modal-edit-btn" onclick="" style="padding:5px 14px;background:var(--teal);color:white;border:none;border-radius:var(--radius);font-family:DM Sans,sans-serif;font-size:13px;font-weight:500;cursor:pointer">Edit</button>
+        <button id="view-modal-delete-btn" onclick="" style="padding:5px 10px;background:none;color:#c0392b;border:1px solid #e8b4b0;border-radius:var(--radius);font-family:DM Sans,sans-serif;font-size:13px;cursor:pointer">&#128465;</button>
         <button onclick="closeViewModal()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--ink-faint);padding:0 4px">&#10005;</button>
       </div>
     </div>
@@ -3126,7 +3127,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         + '<td class="nt-icon">' + (hasVideo ? '<span title="Video linked">&#9654;</span>' : '<span style="color:var(--ink-faint);font-size:12px">—</span>') + '</td>'
         + '<td class="nt-actions">'
         + '<button class="nt-btn" onclick="viewNoteCard('+n.id+')" title="View full note">&#128065;</button> '
-        + '<button class="nt-btn nt-btn-edit" onclick="editNote('+n.id+')" title="Edit">Edit</button>'
+        + '<button class="nt-btn nt-btn-edit" onclick="editNote('+n.id+')" title="Edit">Edit</button> '
+        + '<button class="nt-btn" onclick="deleteNote('+n.id+')" title="Delete" style="color:#c0392b;border-color:#e8b4b0">&#128465;</button>'
         + '</td>'
         + '</tr>';
     }).join('');
@@ -3148,6 +3150,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     var title = (note.surahNum?note.surahNum+'. ':'')+note.surahName+(note.ayah?' — Aayah '+note.ayah:'');
     document.getElementById('view-modal-title').textContent = title;
     document.getElementById('view-modal-edit-btn').onclick = function(){ closeViewModal(); editNote(id); };
+    document.getElementById('view-modal-delete-btn').onclick = function(){ closeViewModal(); deleteNote(id); };
     var b = '';
     // Date
     b += '<div style="font-size:12px;color:var(--ink-muted);margin-bottom:12px">'
