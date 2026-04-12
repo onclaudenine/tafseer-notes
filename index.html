@@ -329,7 +329,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <input type="text" id="reference" placeholder="e.g. Ibn Kathir vol.1, Maariful Quran p.45, Tafsir Al-Sa'di...">
       </div>
       <div class="form-block"><label>Lessons</label>
-<div class="rich-editor-wrap"><div class="rich-toolbar"><button onmousedown="event.preventDefault();fmtCmd('bold')" title="Bold"><b>B</b></button><button onmousedown="event.preventDefault();fmtCmd('italic')" title="Italic"><i>I</i></button><button onmousedown="event.preventDefault();fmtCmd('underline')" title="Underline"><u>U</u></button><div class="sep"></div><button onmousedown="event.preventDefault();fmtCmd('insertUnorderedList')" title="Bullet list">&#8226; List</button><button onmousedown="event.preventDefault();fmtCmd('insertOrderedList')" title="Numbered list">1. List</button><div class="sep"></div><button onmousedown="event.preventDefault();fmtCmd('removeFormat')" title="Clear formatting">Clear</button></div><div class="rich-content" id="action" contenteditable="true" style="min-height:110px;" data-placeholder="Key lessons, action points, things to memorise or apply..."></div></div>
+<div class="rich-editor-wrap"><div class="rich-toolbar"><button onmousedown="event.preventDefault();fmtCmd('bold')" title="Bold"><b>B</b></button><button onmousedown="event.preventDefault();fmtCmd('italic')" title="Italic"><i>I</i></button><button onmousedown="event.preventDefault();fmtCmd('underline')" title="Underline"><u>U</u></button><div class="sep"></div><button onmousedown="event.preventDefault();fmtCmd('insertUnorderedList')" title="Bullet list">&#8226; List</button><button onmousedown="event.preventDefault();fmtCmd('insertOrderedList')" title="Numbered list">1. List</button><div class="sep"></div><button onmousedown="event.preventDefault();fmtCmd('removeFormat')" title="Clear formatting">Clear</button></div><div class="rich-content" id="lessons" contenteditable="true" style="min-height:110px;" data-placeholder="Key lessons, action points, things to memorise or apply..."></div></div>
       </div>
       <div class="form-block"><label>YouTube / video link (optional)</label><input type="text" id="youtube-link" placeholder="e.g. https://youtube.com/watch?v=..."></div>
       <hr class="divider">
@@ -535,7 +535,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <input type="text" id="edit-reference" placeholder="e.g. Ibn Kathir vol.1, Maariful Quran p.45...">
     </div>
     <div class="form-block"><label>Lessons</label>
-<div class="rich-editor-wrap"><div class="rich-toolbar"><button onmousedown="event.preventDefault();fmtCmd('bold')" title="Bold"><b>B</b></button><button onmousedown="event.preventDefault();fmtCmd('italic')" title="Italic"><i>I</i></button><button onmousedown="event.preventDefault();fmtCmd('underline')" title="Underline"><u>U</u></button><div class="sep"></div><button onmousedown="event.preventDefault();fmtCmd('insertUnorderedList')" title="Bullet list">&#8226; List</button><button onmousedown="event.preventDefault();fmtCmd('insertOrderedList')" title="Numbered list">1. List</button><div class="sep"></div><button onmousedown="event.preventDefault();fmtCmd('removeFormat')" title="Clear formatting">Clear</button></div><div class="rich-content" id="edit-action" contenteditable="true" style="min-height:110px;" data-placeholder="Key lessons, action points, things to memorise or apply..."></div></div>
+<div class="rich-editor-wrap"><div class="rich-toolbar"><button onmousedown="event.preventDefault();fmtCmd('bold')" title="Bold"><b>B</b></button><button onmousedown="event.preventDefault();fmtCmd('italic')" title="Italic"><i>I</i></button><button onmousedown="event.preventDefault();fmtCmd('underline')" title="Underline"><u>U</u></button><div class="sep"></div><button onmousedown="event.preventDefault();fmtCmd('insertUnorderedList')" title="Bullet list">&#8226; List</button><button onmousedown="event.preventDefault();fmtCmd('insertOrderedList')" title="Numbered list">1. List</button><div class="sep"></div><button onmousedown="event.preventDefault();fmtCmd('removeFormat')" title="Clear formatting">Clear</button></div><div class="rich-content" id="edit-lessons" contenteditable="true" style="min-height:110px;" data-placeholder="Key lessons, action points, things to memorise or apply..."></div></div>
     </div>
     <div class="form-block"><label>YouTube / video link</label><input type="text" id="edit-youtube-link" placeholder="https://youtube.com/watch?v=..."></div>
     <div class="form-block" id="edit-attachments-section" style="display:none">
@@ -811,13 +811,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     var level=document.getElementById('level').value;
     var groupNotes=document.getElementById('group-notes').innerHTML.trim();
     var reflection=document.getElementById('reflection').innerHTML.trim();
-    var action=document.getElementById('action').innerHTML.trim();
+    var lessons=document.getElementById('lessons').innerHTML.trim();
     var saveMsg=document.getElementById('save-msg');
     var saveBtn=document.getElementById('save-btn');
     if (!sn&&!name){alert('Please enter a surah number.');return;}
     var _gn=groupNotes.replace(/<[^>]+>/g,'').trim();
     var _rf=reflection.replace(/<[^>]+>/g,'').trim();
-    if (!_gn&&!_rf&&!action){alert('Please add at least one note before saving.');return;}
+    var _ls=lessons.replace(/<[^>]+>/g,'').trim();
+    if (!_gn&&!_rf&&!_ls){alert('Please add at least one note before saving.');return;}
     var ayahLabel=from?(to&&to!==from?from+'-'+to:from):'surah level';
     var noteId=Date.now();
     saveBtn.disabled=true;
@@ -838,8 +839,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       group_notes:groupNotes||null,
       reference:document.getElementById('reference').value.trim()||null,
       reflection:reflection||null,
-      reflection_ar:document.getElementById('reflection-ar').innerHTML.trim()||null,
-      action:action||null,
+      lessons:lessons||null,
       word_by_word:fetchedWords.length?JSON.stringify(fetchedWords):null,
       youtube_link:document.getElementById('youtube-link').value.trim()||null,
       attachments:attachments, user_id:currentUser.id
@@ -851,13 +851,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       saveMsg.textContent='Could not save. '+result.error.message;
       saveBtn.disabled=false;return;
     }
-    notes.unshift({id:row.id,date:row.note_date,editedAt:'',timestamps:[],transId:document.getElementById('trans-id').value||'131',surahNum:row.surah_num,surahName:row.surah_name,ayah:row.ayah,level:level,arabic:fetchedArabic,translation:fetchedTrans,wordByWord:fetchedWords.length?JSON.stringify(fetchedWords):null,groupNotes:groupNotes,reference:document.getElementById('reference').value.trim()||'',reflection:reflection,reflectionAr:document.getElementById('reflection-ar').innerHTML.trim()||'',action:action,youtubeLink:row.youtube_link||'',attachments:attachments});
+    notes.unshift({id:row.id,date:row.note_date,editedAt:'',timestamps:[],transId:document.getElementById('trans-id').value||'131',surahNum:row.surah_num,surahName:row.surah_name,ayah:row.ayah,level:level,arabic:fetchedArabic,translation:fetchedTrans,wordByWord:fetchedWords.length?JSON.stringify(fetchedWords):null,groupNotes:groupNotes,reference:document.getElementById('reference').value.trim()||'',reflection:reflection,action:lessons,youtubeLink:row.youtube_link||'',attachments:attachments});
     renderNotes();renderStats();populateFilter();if(notesView==='table')renderNotesTable();
     badge('ok','Synced');saveMsg.className='status-msg';saveMsg.textContent='';
     ['group-notes','reflection'].forEach(function(id){document.getElementById(id).innerHTML='';});
     document.getElementById('reference').value='';
-    document.getElementById('action').innerHTML='';
-    ['action','youtube-link'].forEach(function(id){document.getElementById(id).value='';}); 
+    document.getElementById('lessons').innerHTML='';
+    document.getElementById('youtube-link').value=''; 
     saveLastPosition();
     document.getElementById('ayah-preview').classList.remove('visible');
     document.getElementById('fetch-msg').textContent='';
@@ -895,7 +895,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         return;
       }
       notes=result.data.map(function(r){
-        return {id:r.id,date:r.note_date,editedAt:r.edited_at||'',surahNum:r.surah_num,surahName:r.surah_name,ayah:r.ayah,level:r.level,arabic:r.arabic,translation:r.translation,transId:r.trans_id||'131',wordByWord:r.word_by_word||null,groupNotes:r.group_notes,reference:r.reference||'',reflection:r.reflection,reflectionAr:r.reflection_ar||'',action:r.action,youtubeLink:r.youtube_link||'',attachments:r.attachments||[],timestamps:r.timestamps||[]};
+        return {id:r.id,date:r.note_date,editedAt:r.edited_at||'',surahNum:r.surah_num,surahName:r.surah_name,ayah:r.ayah,level:r.level,arabic:r.arabic,translation:r.translation,transId:r.trans_id||'131',wordByWord:r.word_by_word||null,groupNotes:r.group_notes,reference:r.reference||'',reflection:r.reflection,action:r.lessons,youtubeLink:r.youtube_link||'',attachments:r.attachments||[],timestamps:r.timestamps||[]};
       });
       badge('ok','Synced');renderNotes();renderStats();populateFilter();buildSearchChips();
       if(notesView==='table')renderNotesTable();
@@ -1269,7 +1269,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     document.getElementById('edit-group-notes').innerHTML = note.groupNotes || '';
     document.getElementById('edit-reference').value = note.reference || '';
     document.getElementById('edit-reflection').innerHTML = note.reflection || '';
-    document.getElementById('edit-action').innerHTML = note.action || '';
+    document.getElementById('edit-lessons').innerHTML = note.action || '';
     document.getElementById('edit-youtube-link').value = note.youtubeLink || '';
     document.getElementById('edit-msg').textContent = '';
     editPendingFiles = [];
@@ -1297,7 +1297,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     var groupNotes = document.getElementById('edit-group-notes').innerHTML.trim();
     var reference = document.getElementById('edit-reference').value.trim();
     var reflection = document.getElementById('edit-reflection').innerHTML.trim();
-    var action     = document.getElementById('edit-action').innerHTML.trim();
+    var lessons     = document.getElementById('edit-lessons').innerHTML.trim();
     var youtubeLink= document.getElementById('edit-youtube-link').value.trim();
     var btn = document.getElementById('edit-save-btn');
     var msg = document.getElementById('edit-msg');
@@ -1330,7 +1330,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       group_notes:  groupNotes  || null,
       reference:     reference    || null,
       reflection:   reflection  || null,
-      action:       action      || null,
+      lessons:       lessons      || null,
       youtube_link: youtubeLink || null,
       attachments:  currentAttachments
     }).eq('id', editingId);
@@ -1344,7 +1344,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     // Update in memory
     notes = notes.map(function(n) {
       if (n.id !== editingId) return n;
-      return Object.assign({}, n, {groupNotes:groupNotes, reference:reference, reflection:reflection, reflectionAr:reflectionAr, action:action, youtubeLink:youtubeLink, attachments:currentAttachments, editedAt:now});
+      return Object.assign({}, n, {groupNotes:groupNotes, reference:reference, reflection:reflection, action:lessons, youtubeLink:youtubeLink, attachments:currentAttachments, editedAt:now});
     });
     renderNotes(); renderStats();
     badge('ok','Synced');
@@ -2088,7 +2088,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     var allLines = tsComments.map(function(t){return '['+t.label+'] '+(t.comment||'(no comment)');});
     // Pre-fill the Add note form with this data
     document.getElementById('group-notes').value = enLines.length ? enLines.join('\n') : allLines.join('\n');
-    if(arLines.length) document.getElementById('group-notes-ar').value = arLines.join('\n');
     document.getElementById('youtube-link').value = currentVideoUrl;
     showTab('add');
     // Scroll to save button
@@ -3161,13 +3160,17 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     // Collapsible toggle row
     var hasTranslation = !!note.translation;
     var hasWbw = !!note.wordByWord;
-    if (hasTranslation || hasWbw) {
+    var hasVideo = !!note.youtubeLink;
+    if (hasTranslation || hasWbw || hasVideo) {
       b += '<div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">';
       if (hasTranslation) {
         b += '<button data-sec="vm-translation" onclick="toggleViewSection(this.dataset.sec)" style="font-size:12px;padding:4px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:99px;cursor:pointer;color:var(--ink-mid);font-family:DM Sans,sans-serif" id="vm-trans-btn">&#128065; Show translation</button>';
       }
       if (hasWbw) {
         b += '<button data-sec="vm-wbw" onclick="toggleViewSection(this.dataset.sec)" style="font-size:12px;padding:4px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:99px;cursor:pointer;color:var(--ink-mid);font-family:DM Sans,sans-serif" id="vm-wbw-btn">&#9783; Show word by word</button>';
+      }
+      if (hasVideo) {
+        b += '<button data-sec="vm-video" onclick="toggleViewSection(this.dataset.sec)" style="font-size:12px;padding:4px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:99px;cursor:pointer;color:var(--ink-mid);font-family:DM Sans,sans-serif" id="vm-video-btn">&#9654; Play video</button>';
       }
       b += '</div>';
     }
@@ -3179,11 +3182,24 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     if (hasWbw) {
       b += '<div id="vm-wbw" style="display:none;margin-bottom:12px"></div>';
     }
+    // Video player (hidden by default)
+    if (hasVideo) {
+      b += '<div id="vm-video" style="display:none;margin-bottom:12px">';
+      b += '<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius-lg)">'
+        + '<iframe id="vm-video-iframe" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:var(--radius-lg)" allowfullscreen allow="autoplay; encrypted-media"></iframe>'
+        + '</div>';
+      if (note.timestamps && note.timestamps.length) {
+        b += '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">';
+        note.timestamps.slice().sort(function(a,c){return a.time-c.time;}).forEach(function(ts){
+          b += '<button data-secs="'+ts.time+'" onclick="vmSeekTo(+this.dataset.secs)" style="font-size:11px;font-weight:600;color:var(--teal);padding:2px 8px;background:var(--teal-light);border-radius:99px;border:1px solid #9fe1cb;cursor:pointer" title="'+escHtml(ts.comment||ts.label)+'">'+ts.label+'</button>';
+        });
+        b += '</div>';
+      }
+      b += '</div>';
+    }
     // Notes
     if (note.groupNotes) b += '<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);margin-bottom:4px">Study group notes</div><div style="line-height:1.7">'+note.groupNotes+'</div></div>';
-    if (note.groupNotesAr) b += '<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);margin-bottom:4px">Study group notes (Arabic)</div><div style="font-family:Amiri,serif;font-size:1.1rem;direction:rtl;text-align:right;line-height:1.8">'+note.groupNotesAr+'</div></div>';
     if (note.reflection) b += '<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);margin-bottom:4px">Personal reflection</div><div style="line-height:1.7">'+note.reflection+'</div></div>';
-    if (note.reflectionAr) b += '<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);margin-bottom:4px">Reflection (Arabic)</div><div style="font-family:Amiri,serif;font-size:1.1rem;direction:rtl;text-align:right;line-height:1.8">'+note.reflectionAr+'</div></div>';
     if (note.reference) b += '<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);margin-bottom:4px">Reference</div><div style="font-size:13px;color:var(--ink-mid)">&#128218; '+escHtml(note.reference)+'</div></div>';
     if (note.action) b += '<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);margin-bottom:4px">Lessons</div><div style="line-height:1.7">'+note.action+'</div></div>';
     // Timestamps
@@ -3191,7 +3207,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       b += '<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);margin-bottom:6px">Timestamps</div>';
       note.timestamps.slice().sort(function(a,b){return a.time-b.time;}).forEach(function(ts){
         b += '<div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--surface-2)">'
-          +'<span style="font-size:11px;font-weight:600;color:var(--teal);padding:2px 8px;background:var(--teal-light);border-radius:99px;border:1px solid #9fe1cb;flex-shrink:0">'+ts.label+'</span>'
+          +'<button data-secs="'+ts.time+'" onclick="vmSeekTo(+this.dataset.secs)" style="font-size:11px;font-weight:600;color:var(--teal);padding:2px 8px;background:var(--teal-light);border-radius:99px;border:1px solid #9fe1cb;cursor:pointer;flex-shrink:0" title="Jump to '+ts.label+'">'+ts.label+'</button>'
           +(ts.comment?'<span style="font-size:12px;color:var(--ink-mid)">'+escHtml(ts.comment)+'</span>':'')+'</div>';
       });
       b += '</div>';
